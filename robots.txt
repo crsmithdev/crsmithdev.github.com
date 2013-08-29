@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://crsmithdev.github.com/sitemap.xml 
