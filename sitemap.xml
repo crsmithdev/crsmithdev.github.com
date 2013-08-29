@@ -1,21 +1,2 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
-    <url>
-        <loc>
-            http://crsmithdev.github.com/blog/2013/03/26/building-better-email-habits-with-mailbox/
-        </loc>
-        <lastmod>2013-03-25T20:17:52-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://crsmithdev.github.com/blog/archives/</loc>
-        <lastmod>2013-03-25T20:17:52-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://crsmithdev.github.com/</loc>
-        <lastmod>2013-03-25T20:17:52-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://crsmithdev.github.com/robots.txt</loc>
-        <lastmod>2013-03-12T21:27:45-07:00</lastmod>
-    </url>
-</urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>http://nakkaya.com</loc></url><url><loc>http://nakkaya.com/2013/03/26/building-better-email-habits-with-mailbox/</loc></url><url><loc>http://nakkaya.com/about.html</loc></url><url><loc>http://nakkaya.com/blog.html</loc></url><url><loc>http://nakkaya.com/index.html</loc></url><url><loc>http://nakkaya.com/projects.html</loc></url></urlset>
