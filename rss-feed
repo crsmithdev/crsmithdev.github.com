@@ -1,6 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>An explorer's log</title><link>http://nakkaya.com</link><description>Random bits and pieces on stuff that I find interesting.</description><item><title>Building Better Email Habits with Mailbox</title><link>http://nakkaya.com/2013/03/26/building-better-email-habits-with-mailbox/</link><pubDate>Tue, 26 Mar 2013 00:00:00 -0700</pubDate><description>&lt;h2&gt;Building Better Email Habits with Mailbox&lt;/h2&gt;&lt;h3&gt;Introduction&lt;/h3&gt;&lt;p&gt;As my first-ever blog post, I'm presenting my recent experience with the recent email app, &lt;a href=&quot;http://mailboxapp.com&quot;&gt;Mailbox&lt;/a&gt;. This is less about the app itself, however (or it recently being snapped up by Dropbox for $100 million), but more about how I used it to help me examine and improve my behavior when it comes to handling and communicating via email.&lt;/p&gt;&lt;h3&gt;Mailbox&lt;/h3&gt;&lt;p&gt;Briefly, Mailbox is an iPhone app that integrates aggressively with one or more of your email accounts (GMail only, for now), and through a gesture-focused UI presents four actions to be taken on any one email: archive it, delete it, reschedule it for later, or send it to a list. Of the four, rescheduling is the most interesting, as it yanks the email from your inbox at that moment and then returns it after a selectable interval. The gestures and UI are slick, performance is good, and despite the significant wait to actually be able to USE the app (roughly 3 weeks in the queue), it has managed to become the default email application on my phone already. 5 stars from me.&lt;/p&gt;&lt;p&gt;But this is not an app review, it's a behavioral one. What's immediately clear about the Mailbox experience is that it is entirely geared toward reaching and maintaining &quot;inbox zero&quot;. The app badge indicates the total number of emails in your inbox, &lt;strong&gt;not&lt;/strong&gt; the number of unread ones. By default, push notifications are enabled for &lt;strong&gt;all&lt;/strong&gt; emails (though this is configurable). Clearing your way to zero rewards you with a peek at a nice, relaxing image, and the option to share the first time you accomplish it. Clearly, a strongly opinionated design.&lt;/p&gt;&lt;h3&gt;Diving in&lt;/h3&gt;&lt;p&gt;What hit me immediately upon using the app for the first time, however, looked more like this: across two accounts, an app badge of 900+ and a steady snowfall of push notifications about incoming emails. Obviously a broken state of affairs even in the absence of an opinionated email app, but also one that is effectively incompatible with Mailbox. A reflexive response from me might be to defer trying out the app until I got around to cleaning up my inbox...and then to defer cleaning my inbox until some undefined date and time that's easy to forget and conveniently lets me continue doing things just as I have been.&lt;/p&gt;&lt;p&gt;I've been wanting to take a more active role in examining, managing and changing my habits and behavior patterns recently, so I took the opposite approach: I sat down, cleaned up my inbox that night, tried the app, and decided to make an experiment out of it. Instead of rejecting something that went against the grain of my well-worn and familiar behaviors, what if I tried to bend and change them instead, and used the app as a tool to do so?&lt;/p&gt;&lt;p&gt;Most importantly, I resolved to cast a critical eye on the process, and keep some notes so I could write about it.&lt;/p&gt;&lt;h3&gt;Behavior&lt;/h3&gt;&lt;p&gt;It took little introspection to quickly identify my typical pattern of managing email. As with many things, it was clearly a sub-optimal pattern that I had grown well-accustomed to through years of extensive practice. What follows is the cycle I would repeat every several months:&lt;/p&gt;
+<rss version="2.0"><channel><title>crsmithdev.com</title><link>http://crsmithdev.com</link><description>crsmithdev.com</description><item><title>A blog refresh with Bootstrap and Static</title><link>http://crsmithdev.com/2013/09/02/a-blog-refresh-with-bootstrap-and-static/</link><pubDate>Mon, 2 Sep 2013 00:00:00 -0700</pubDate><description>&lt;h2&gt;A blog refresh with Bootstrap 3 and Static&lt;/h2&gt;&lt;h3&gt;Previously&lt;/h3&gt;&lt;p&gt;Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year. My needs were simple: it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in &lt;strong&gt;no&lt;/strong&gt; way to be the technology or process of creating and maintaining it. Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for &lt;em&gt;writing&lt;/em&gt;, not to go on a technical adventure in creating one. Although I've only written two posts on it so far, the effort was successful: in short order, I'd set up &lt;a href=&quot;http://octopress.org&quot;&gt;Octopress&lt;/a&gt; and had it deploying to Pages. The result looked like this:&lt;/p&gt;&lt;p&gt;&lt;img class=&quot;img-responsive img-thumbnail blog-image&quot; src=&quot;/img/crsmithdev_com_old.jpg&quot;/&gt;&lt;/p&gt;&lt;p&gt;I found it usable but lacking in a few key ways, the most significant of which was that I was simply underwhelmed with the themes available for Octopress, and had little interest in building a new theme or heavily modifying an existing one. Moreover, it felt very much like a monolithic framework, into a tiny corner of which were tucked the contents of my blog. I realized that what I wanted was a simple engine that would handle the work of converting Markdown to HTML and stitching the results together with templates, but would otherwise stay out of the way as much as possible, impose little structure and even less of its own code on me, and give me total control over the design without relying on theming.&lt;/p&gt;&lt;p&gt;I was also eager to address a few specific issues:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;It was &lt;em&gt;only&lt;/em&gt; a blog, lacking even a bio page.&lt;/li&gt;
+  &lt;li&gt;Responsiveness was questionable.&lt;/li&gt;
+  &lt;li&gt;Syntax highlighting was not supported.&lt;/li&gt;
+  &lt;li&gt;I wanted to add a simple display of recent GitHub activity.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Lastly, as Clojure is quickly eclipsing all others as my hacking language of choice, I was heavily biased towards finding a solution that was written in and used it.&lt;/p&gt;&lt;h3&gt;Components&lt;/h3&gt;&lt;p&gt;In the end, I selected the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://getbootstrap.com&quot;&gt;Bootstrap 3&lt;/a&gt; - newly released, rebuilt and responsive-first.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://bootswatch.com/flatly/&quot;&gt;Flatly&lt;/a&gt; theme from &lt;a href=&quot;http://bootswatch.com/&quot;&gt;Bootswatch&lt;/a&gt; - a flat, simple and readable theme for Bootstrap 3.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/nakkaya/static&quot;&gt;Static&lt;/a&gt; - a tiny, embeddable static site generator in Clojure.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://fortawesome.github.io/Font-Awesome/&quot;&gt;Font Awesome&lt;/a&gt; - high-quality icons.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://code.google.com/p/google-code-prettify/&quot;&gt;google-code-prettify&lt;/a&gt; - code syntax highlighting.&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Static&lt;/h3&gt;&lt;p&gt;Static is a very simple static site generator, with full documentation that spans about &lt;a href=&quot;http:/nakkaya.com/static.html&quot;&gt;two pages&lt;/a&gt;. What's most refreshing about Static (compared to Octropress, at least) is that it's built as a separate project, and then the .jar is copied into the repo for the site that will use it. This means that the only traces of it that end up in the blog project are the .jar itself, and a few, flexible conventions regarding directory structure.&lt;/p&gt;&lt;p&gt;Here's all that's needed to get started with Static:&lt;/p&gt;
+&lt;!--?prettify lang=sh--&gt;
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/nakkaya/static.git
+cd static
+lein deps
+lein uberjar
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This results in a .jar named &lt;code&gt;static-app.jar&lt;/code&gt; in the &lt;code&gt;target&lt;/code&gt; directory, which can then be copied into a fresh repo for a site:&lt;/p&gt;
+&lt;!--?prettify lang=sh--&gt;
+&lt;pre&gt;&lt;code&gt;cd ..
+mkdir crsmithdev.com
+cd crsmithdev.com
+git init
+cp ../static/target/static-app.jar .
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;At minimum, this is the default structure of files and directories needed for a site:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.
+|-- config.clj
+`-- resources
+    |-- posts
+    |-- public
+    |-- site
+    |-- templates
+        `-- default.clj
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;A brief description of what all these are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;config.clj&lt;/code&gt; - global site configuration options.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;posts&lt;/code&gt; - blog posts, in markdown or org-mode format.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;public&lt;/code&gt; - public site resources and directories (&lt;code&gt;js&lt;/code&gt;, &lt;code&gt;css&lt;/code&gt;, etc.), to be copied to the root of the generated site.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;site&lt;/code&gt; - Hiccup templates for the content of non-blog-post pages.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;templates&lt;/code&gt; - Full-page Hiccup templates.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;All that's needed to build the site is this:&lt;/p&gt;
+&lt;!--?prettify lang=sh--&gt;
+&lt;pre&gt;&lt;code&gt;java -jar static-app.jar --build
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The &lt;code&gt;--watch&lt;/code&gt; option can be used to rebuild automatically when a file changes. When the site builds, something like the following should result:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[+] INFO: Using tmp location: /var/folders/r5/30xb2fj573b_s9_2f18y4s_00000gn/T/static/
+[+] INFO: Processing Public  0.011 secs
+[+] INFO: Processing Site  0.213 secs
+[+] INFO: Processing Posts  0.695 secs
+[+] INFO: Creating RSS  0.07 secs
+[+] INFO: Creating Tags  0.03 secs
+[+] INFO: Creating Sitemap  0.0040 secs
+[+] INFO: Creating Aliases  0.01 secs
+[+] INFO: Build took  1.034 secs
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;An &lt;code&gt;html&lt;/code&gt; directory will be created in the root of the site, containing all the generated HTML. I found that pointing my local nginx at this folder was the most straightforward way to serve the site locally while working on it, although Static does offer a &lt;code&gt;--jetty&lt;/code&gt; option to serve it as well. The contents of my &lt;code&gt;config.clj&lt;/code&gt; are as follows:&lt;/p&gt;
+&lt;!--?prettify lang=clj--&gt;
+&lt;pre&gt;&lt;code&gt;[:site-title &amp;quot;crsmithdev.com&amp;quot;
+ :site-description &amp;quot;crsmithdev.com&amp;quot;
+ :site-url &amp;quot;http://crsmithdev.com&amp;quot;
+ :in-dir &amp;quot;resources/&amp;quot;
+ :out-dir &amp;quot;html/&amp;quot;
+ :default-template &amp;quot;default.clj&amp;quot;
+ :encoding &amp;quot;UTF-8&amp;quot;
+ :blog-as-index false
+ :create-archives false
+ :atomic-build true]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;HTML templating with Hiccup&lt;/h3&gt;&lt;p&gt;Static uses &lt;a href=&quot;https://github.com/weavejester/hiccup&quot;&gt;Hiccup&lt;/a&gt;, a great templating library for Clojure, to specify the structure of pages it generates. Having never used it before, I instantly found it to be very natural and efficient &amp;mdash; the syntax is extremely minimal, vectors and maps are used for elements and their attributes, respectively, and it's possible to embed Clojure code right along with element definitions.&lt;/p&gt;&lt;p&gt;Here's what the first few lines of my default template look like:&lt;/p&gt;
+&lt;!--?prettify lang=clj--&gt;
+&lt;pre&gt;&lt;code&gt;[:html
+ {:xmlns &amp;quot;http://www.w3.org/1999/xhtml&amp;quot; :lang &amp;quot;en&amp;quot; :xml:lang &amp;quot;en&amp;quot;}
+ [:head
+  [:meta {:http-equiv &amp;quot;content-type&amp;quot; :content &amp;quot;text/html; charset=UTF-8&amp;quot;}]
+  [:meta {:name &amp;quot;description&amp;quot; :content (:description metadata)}]
+  [:meta {:name &amp;quot;keywords&amp;quot; :content (:tags metadata)}]
+  [:meta {:name &amp;quot;author&amp;quot; :content &amp;quot;Chris Smith&amp;quot;}]
+  [:meta {:name &amp;quot;viewport&amp;quot; :content &amp;quot;width=device-width, initial-scale=1.0&amp;quot;}]
+  [:link {:rel &amp;quot;icon&amp;quot; :href &amp;quot;/images/favicon.ico&amp;quot; :type &amp;quot;image/x-icon&amp;quot;}]
+  [:link {:rel &amp;quot;shortcut icon&amp;quot; :href &amp;quot;/images/favicon.ico&amp;quot; :type &amp;quot;image/x-icon&amp;quot;}]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Note the access of the &lt;code&gt;:description&lt;/code&gt; and &lt;code&gt;:tags&lt;/code&gt; from &lt;code&gt;metadata&lt;/code&gt;. Static injects a few values into page rendering, specifically &lt;code&gt;metadata&lt;/code&gt; and &lt;code&gt;content&lt;/code&gt;. &lt;code&gt;metadata&lt;/code&gt; provides some information about what kind of page is being rendered, as well as the metadata specified in the headers of blog posts, while &lt;code&gt;content&lt;/code&gt; is the actual Markdown or Hiccup-generated content that the template will include. Because of this, it's possible to specify different behaviors depending on what's being rendered: &lt;/p&gt;
+&lt;!--?prettify lang=clj--&gt;
+&lt;pre&gt;&lt;code&gt;[:div.content
+ [:div.container
+  (if (= (:type metadata) :post)
+    [:div.row
+     [:div.col-md-12
+      content
+      [:div#disqus_thread]
+      [:script {:type &amp;quot;text/javascript&amp;quot;}
+       &amp;quot;// ... (disqus js)&amp;quot;]]]
+    content)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Above, if the page is a post, a simple Bootstrap grid is created, followed by the standard JS to include Disqus comments. Note the terse syntax for specifying element classes: this is actually one of two possible syntaxes to define classes and ids. Below, these two forms are equivalent:&lt;/p&gt;
+&lt;!--?prettify lang=clj--&gt;
+&lt;pre&gt;&lt;code&gt;[:div {:class &amp;quot;col-md-12&amp;quot;} &amp;quot;...&amp;quot;]
+[:div.col-md-12 &amp;quot;...&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In the absence of a ready way to list blog post titles and dates, I found and adapted some code from the site of Static's &lt;a href=&quot;http://nakkaya.com/&quot;&gt;author&lt;/a&gt;. A number of functions are made available within templates, although they are largely undocumented:&lt;/p&gt;
+&lt;!--?prettify lang=clj--&gt;
+&lt;pre&gt;&lt;code&gt;[:div.row
+ [:div.col-md-6
+  [:h4 &amp;quot;Recent Blog Posts&amp;quot;]
+  (map #(let [f % url (static.core/post-url f)
+              [metadata _] (static.io/read-doc f)
+              date (static.core/parse-date
+                    &amp;quot;yyyy-MM-dd&amp;quot; &amp;quot;dd MMMM yyyy&amp;quot;
+                    (re-find #&amp;quot;\d*-\d*-\d*&amp;quot; (str f)))]
+     [:div
+      [:div [:a {:href url} (:title metadata)]
+      [:div date]]])
+     (take 5 (reverse (static.io/list-files :posts))))]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Bootstrap 3, Font Awesome, and theming&lt;/h3&gt;&lt;p&gt;Fortunately, Bootstrap 3 was nearing release as I was beginning to work on the site, so I grabbed the RC2 version and went to work. &lt;a href=&quot;http://bootswatch.com/&quot;&gt;Bootswatch&lt;/a&gt; provides a nice selection of attractive, free themes for Bootstrap 3, of which I picked &lt;a href=&quot;http://bootswatch.com/flatly/&quot;&gt;Flatly&lt;/a&gt;. &lt;a href=&quot;http://fortawesome.github.io/Font-Awesome/&quot;&gt;Font Awesome&lt;/a&gt; has high-quality icons for Twitter, GitHub and LinkedIn (amongst many, many others), making it an easy choice here.&lt;/p&gt;&lt;p&gt;There are plenty of great starting points / tutorials already out there for Bootstrap (I'd recommend this &lt;a href=&quot;http://getbootstrap.com/getting-started/#template&quot;&gt;starter template&lt;/a&gt;). I did make some adjustments to the Flatly theme, though, with the goal of making the site a bit easier on the reader's eyes and more suitable for text-dense pages:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Changed the standard font to &lt;strong&gt;Source Sans Pro&lt;/strong&gt; (from the default &lt;strong&gt;Lato&lt;/strong&gt;)&lt;/li&gt;
+  &lt;li&gt;Changed the code font to &lt;strong&gt;Source Code Pro&lt;/strong&gt; (from the default &lt;strong&gt;Monaco&lt;/strong&gt;).&lt;/li&gt;
+  &lt;li&gt;Increased line-height to 24px.&lt;/li&gt;
+  &lt;li&gt;Narrowed the container max-width to 840px.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;The fonts can be found at &lt;a href=&quot;http://www.google.com/fonts&quot;&gt;Google Fonts&lt;/a&gt;.&lt;/p&gt;&lt;h3&gt;Github Activity&lt;/h3&gt;&lt;p&gt;While there are some JS libraries to access the GitHub API, my needs were so simple that I was unwilling to introduce additional dependencies to just to parse a little bit of JSON and generate a few DOM elements. For the same reason, while I ordinarily would be using libraries like &lt;a href=&quot;http://underscorejs.org&quot;&gt;underscore.js&lt;/a&gt; and &lt;a href=&quot;http://momentjs.org&quot;&gt;moment.js&lt;/a&gt; for dates, templating or even iteration, here I opted for vanilla JS.&lt;/p&gt;&lt;p&gt;The full code to retrieve, process and display my GitHub commits can be found &lt;a href=&quot;https://github.com/crsmithdev/crsmithdev.com/blob/master/resources/public/js/crsmithdev.js&quot;&gt;here&lt;/a&gt;. I needed a function to retrieve some JSON from GitHub, transform some of that data into a list of DOM elements, and then append those elements to any containers matching a certain CSS selector:&lt;/p&gt;
+&lt;!--?prettify lang=js--&gt;
+&lt;pre&gt;&lt;code&gt;var activity = function(sel, n) {
+    var containers = $(sel);
+
+    if (containers.length &amp;gt; 0) {
+        $.ajax({
+            url: &amp;#39;https://api.github.com/users/crsmithdev/events&amp;#39;,
+            dataType: &amp;#39;jsonp&amp;#39;,
+            success: function (json) {
+                var elements = commits(json.data, n);
+                containers.append(elements);
+            }
+        });
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Parsing the JSON is straightforward, as every event that involves a commit will have a &lt;code&gt;payload.commit&lt;/code&gt; property containing an array of commits. Using arrays and a native &lt;code&gt;.join()&lt;/code&gt; function should be preferred to string concatenation, in the absence of templating:&lt;/p&gt;
+&lt;!--?prettify lang=js--&gt;
+&lt;pre&gt;&lt;code&gt;var repo = event.repo.name.split(&amp;#39;/&amp;#39;)[1];
+var date = toDateString(event.created_at);
+
+for (var j = 0; j &amp;lt; event.payload.commits.length; ++j) {
+    var commit = event.payload.commits[j];
+
+    var arr = [&amp;#39;&amp;lt;div&amp;gt;&amp;lt;div&amp;gt;&amp;lt;a href=https://github.com/&amp;quot;&amp;#39;, event.repo.name, &amp;#39;/commit/&amp;#39;,
+        commit.sha, &amp;#39;&amp;quot;&amp;gt;&amp;#39;, commit.message, &amp;#39;&amp;lt;/a&amp;gt; &amp;lt;span class=&amp;quot;text-muted&amp;quot;&amp;gt;&amp;#39;, repo,
+        &amp;#39;&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;#39;, &amp;#39;&amp;lt;div&amp;gt;&amp;#39;, date, &amp;#39;&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;&amp;#39;];
+
+    elements.push($(arr.join(&amp;#39;&amp;#39;)));
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Dates are handled with a simple function and an array of month names. The GitHub API provides dates in ISO-8601 format (YYYY-MM-DDThh:mm:ssZ), so it's easy to extract the year, month, and day:&lt;/p&gt;
+&lt;!--?prettify lang=js--&gt;
+&lt;pre&gt;&lt;code&gt;var months = [&amp;#39;January&amp;#39;, &amp;#39;Febuary&amp;#39;, &amp;#39;March&amp;#39;, &amp;#39;April&amp;#39;, &amp;#39;May&amp;#39;, &amp;#39;June&amp;#39;, &amp;#39;July&amp;#39;, &amp;#39;August&amp;#39;,
+    &amp;#39;September&amp;#39;, &amp;#39;October&amp;#39;, &amp;#39;November&amp;#39;, &amp;#39;December&amp;#39;];
+
+// ...
+
+var toDateString = function(date) {
+
+    try {
+        var parts = date.split(&amp;#39;T&amp;#39;)[0].split(&amp;#39;-&amp;#39;);
+        var month = months[parseInt(parts[1]) - 1];
+        return [parts[2], month, parts[0]].join(&amp;#39; &amp;#39;);
+    }
+    catch (e) {
+        return &amp;#39;???&amp;#39;;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And of course, all this is wrapped in a module that exposes only one public method, and run when ready:&lt;/p&gt;
+&lt;!--?prettify lang=js--&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    ghActivity.activity(&amp;#39;.gh-recent&amp;#39;, 5);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Syntax Highlighting&lt;/h3&gt;&lt;p&gt;Originally I attempted to use &lt;a href=&quot;http://softwaremaniacs.org/soft/highlight/en/&quot;&gt;highlight.js&lt;/a&gt;, but quickly ran into issues: nearly all of the guesses it made about what kind of syntax was being presented were wrong, and it was difficult to override its default guessing behavior, especially given that I was writing the posts in Markdown, not raw HTML. Fortunately, &lt;a href=&quot;https://code.google.com/p/google-code-prettify/&quot;&gt;google-code-prettify&lt;/a&gt; was a much more usable option, even though it does require an &lt;a href=&quot;https://code.google.com/p/google-code-prettify/source/browse/trunk/src/lang-clj.js&quot;&gt;extension&lt;/a&gt; to handle Clojure.&lt;/p&gt;&lt;p&gt;If I posts &lt;em&gt;were&lt;/em&gt; written HTML, using google-code-prettify would look something like this:&lt;/p&gt;
+&lt;!--?prettify lang=html--&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;pre class=&amp;quot;prettyprint lang-clj&amp;quot;&amp;gt;&amp;lt;code&amp;gt;
+   [:h3 &amp;quot;Interests &amp;amp; Areas of Expertise&amp;quot;]
+    [:ul
+     [:li &amp;quot;API design, development and scalability&amp;quot;]
+     [:li &amp;quot;Distributed systems and architecture&amp;quot;]
+     [:li &amp;quot;Functional programming&amp;quot;]
+     ; ...
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But since posts are written in Markdown, that isn't an option. There's no way to add a class to the auto-generated &lt;code&gt;&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;...&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;&lt;/code&gt; blocks, and although I could have used literal HTML instead, that brings with it some other issues (angle brackets in code then have to be manually escaped, for example). Fortunately, google-code-prettify allows the use of directives in HTML comments preceding code blocks, meaning this works the same as the above:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!--?prettify lang=clj--&amp;gt;
+
+    [:h3 &amp;quot;Interests &amp;amp; Areas of Expertise&amp;quot;]
+     [:ul
+      [:li &amp;quot;API design, development and scalability&amp;quot;]
+      [:li &amp;quot;Distributed systems and architecture&amp;quot;]
+      [:li &amp;quot;Functional programming&amp;quot;]
+      ; ...
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Deployment&lt;/h3&gt;&lt;p&gt;Deployment to GitHub Pages was very straightforward. I nuked my existing &lt;a href=&quot;https://github.com/crsmithdev/crsmithdev.github.com&quot;&gt;crsmithdev.github.com&lt;/a&gt; master and copied over all the files from the &lt;code&gt;html&lt;/code&gt; directory, being sure to add a CNAME file referencing my &lt;a href=&quot;http://crsmithdev.com&quot;&gt;crsmithdev.com&lt;/a&gt; domain so Pages would work currently under it. One push and the site was up and running.&lt;/p&gt;&lt;h3&gt;Future work&lt;/h3&gt;&lt;p&gt;I'm much happier with the site now, but still see some areas for improvement:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Some optimizations could definitely improve load times. I'll likely write a future post about this.&lt;/li&gt;
+  &lt;li&gt;I'd very much like to be able to partially render blog posts on the index page (a title and two paragraphs or so).&lt;/li&gt;
+  &lt;li&gt;Simply put, I need to write more.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Of course, the last of these is the most difficult for me, which is often a sign that it's the most important.&lt;/p&gt;</description></item><item><title>Building Better Email Habits with Mailbox</title><link>http://crsmithdev.com/2013/03/26/building-better-email-habits-with-mailbox/</link><pubDate>Tue, 26 Mar 2013 00:00:00 -0700</pubDate><description>&lt;h2&gt;Building Better Email Habits with Mailbox&lt;/h2&gt;&lt;h3&gt;Introduction&lt;/h3&gt;&lt;p&gt;As my first-ever blog post, I'm presenting my recent experience with the recent email app, &lt;a href=&quot;http://mailboxapp.com&quot;&gt;Mailbox&lt;/a&gt;. This is less about the app itself, however (or it recently being snapped up by Dropbox for $100 million), but more about how I used it to help me examine and improve my behavior when it comes to handling and communicating via email.&lt;/p&gt;&lt;h3&gt;Mailbox&lt;/h3&gt;&lt;p&gt;Briefly, Mailbox is an iPhone app that integrates aggressively with one or more of your email accounts (GMail only, for now), and through a gesture-focused UI presents four actions to be taken on any one email: archive it, delete it, reschedule it for later, or send it to a list. Of the four, rescheduling is the most interesting, as it yanks the email from your inbox at that moment and then returns it after a selectable interval. The gestures and UI are slick, performance is good, and despite the significant wait to actually be able to USE the app (roughly 3 weeks in the queue), it has managed to become the default email application on my phone already. 5 stars from me.&lt;/p&gt;&lt;p&gt;But this is not an app review, it's a behavioral one. What's immediately clear about the Mailbox experience is that it is entirely geared toward reaching and maintaining &quot;inbox zero&quot;. The app badge indicates the total number of emails in your inbox, &lt;strong&gt;not&lt;/strong&gt; the number of unread ones. By default, push notifications are enabled for &lt;strong&gt;all&lt;/strong&gt; emails (though this is configurable). Clearing your way to zero rewards you with a peek at a nice, relaxing image, and the option to share the first time you accomplish it. Clearly, a strongly opinionated design.&lt;/p&gt;&lt;h3&gt;Diving in&lt;/h3&gt;&lt;p&gt;What hit me immediately upon using the app for the first time, however, looked more like this: across two accounts, an app badge of 900+ and a steady snowfall of push notifications about incoming emails. Obviously a broken state of affairs even in the absence of an opinionated email app, but also one that is effectively incompatible with Mailbox. A reflexive response from me might be to defer trying out the app until I got around to cleaning up my inbox...and then to defer cleaning my inbox until some undefined date and time that's easy to forget and conveniently lets me continue doing things just as I have been.&lt;/p&gt;&lt;p&gt;I've been wanting to take a more active role in examining, managing and changing my habits and behavior patterns recently, so I took the opposite approach: I sat down, cleaned up my inbox that night, tried the app, and decided to make an experiment out of it. Instead of rejecting something that went against the grain of my well-worn and familiar behaviors, what if I tried to bend and change them instead, and used the app as a tool to do so?&lt;/p&gt;&lt;p&gt;Most importantly, I resolved to cast a critical eye on the process, and keep some notes so I could write about it.&lt;/p&gt;&lt;h3&gt;Behavior&lt;/h3&gt;&lt;p&gt;It took little introspection to quickly identify my typical pattern of managing email. As with many things, it was clearly a sub-optimal pattern that I had grown well-accustomed to through years of extensive practice. What follows is the cycle I would repeat every several months:&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;Allow emails to accrete with little or no management, cherry-picking important ones if they caught my eye amongst the vast majority which won't actually (ever) be opened.&lt;/li&gt;
   &lt;li&gt;Mount a brief, intense and heroic campaign to hack through ALL of it at once, responding, sorting, labeling, deleting.&lt;/li&gt;
