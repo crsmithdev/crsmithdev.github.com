@@ -27,7 +27,7 @@ make install
 mv redis.conf /etc/redis/redis.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Verify the server is working by running the following:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;redis-server /etc/redis/redis.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Adding run arguments to the image&lt;/h3&gt;&lt;p&gt;In the example, the resulting container is commited to an image and run like so:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Adding run arguments to the image&lt;/h3&gt;&lt;p&gt;In the example, the resulting container is committed to an image and run like so:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo docker commit &amp;lt;container_id&amp;gt; crsmithdev/redis
 sudo docker run -d -p 6379 crsmithdev/redis /usr/bin/redis-server
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;However, it makes more sense to me that it &lt;strong&gt;always&lt;/strong&gt; runs on port 6379, and &lt;code&gt;redis-server&lt;/code&gt; is the only command this container should ever be running. Here's an alternate way to commit the container that addresses both these issues:&lt;/p&gt;
