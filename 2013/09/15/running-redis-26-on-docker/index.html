@@ -8,7 +8,7 @@
   <li>A container exists as running or stopped, and can be run interactively or in the background.</li>
   <li>Images are lightweight, perhaps 100Mb for a Redis server running on Ubuntu.</li>
   <li>Containers are not virtual machines, so they are lightening-fast to boot and lightweight on resources.</li>
-</ul><p>One of the documentation examples describes setting up a <a href="http://redis.io">Redis</a> service. Following the example was straightforward, but I felt it was missing two things when I was finished. First, it uses Redis 2.4, which is already quite out of date (as of this writing, Redis 2.8 is nearing release). And, there are a few more interesting options Docker provides that weren't used.</p><h3>Installing Redis 2.6</h3><p>The first thing to do is start a container from a base image, in this case the <code>ubuntu</code> image pulled during setup:</p>
+</ul><p>One of the documentation examples describes setting up a <a href="http://redis.io">Redis</a> service. Following the example was straightforward, but I felt it was missing two things when I was finished. First, it uses Redis 2.4, which is already quite out of date (as of this writing, Redis 2.8 is nearing release). Plus, it felt awkward having to specify a lengthy command and config file each time the container started.</p><h3>Installing Redis 2.6</h3><p>The first thing to do is start a container from a base image, in this case the <code>ubuntu</code> image pulled during setup:</p>
 <pre><code>sudo docker run -i -t ubuntu /bin/bash
 </code></pre><p>This results in a root shell on a new, running Ubuntu container. A few things will be needed in order to download, build and test Redis:</p>
 <pre><code>apt-get install wget build-essential tcl8.5
