@@ -1,11 +1,19 @@
+
+
+    
+
+
+    
+
+
+
+
 <!DOCTYPE HTML>
 
 <html>
     <head>
         
-            
-                <title>Chris Smith</title>
-            
+            <title>Blog - Chris Smith</title>
         
 
         <meta charset="utf-8" />
@@ -22,13 +30,13 @@
         
 
         
-        <meta property="og:title" content="Chris Smith" />
+        <meta property="og:title" content="Blogs" />
 <meta property="og:description" content="HTML5 UP theme, Future Imperfect with some extra goodies, ported by Julio Pescador. Powered by Hugo" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://hugo.spf13.com/" />
+<meta property="og:url" content="http://hugo.spf13.com/blog/" />
 
 
-
+<meta property="og:updated_time" content="2013-09-15T11:34:46&#43;07:00"/>
 
 
 
@@ -39,7 +47,7 @@
 
 
         
-<meta itemprop="name" content="Chris Smith">
+<meta itemprop="name" content="Blogs">
 <meta itemprop="description" content="HTML5 UP theme, Future Imperfect with some extra goodies, ported by Julio Pescador. Powered by Hugo">
 
 
@@ -85,10 +93,9 @@ ga('send', 'pageview');
         <div id="wrapper">
 
     
-    
 <header id="header">
     
-        <h1><a href="/">Chris Smith</i></a></h1>
+        <h2><a href="/">Chris Smith</i></a></h2>
     
 
     <nav class="links">
@@ -116,10 +123,6 @@ ga('send', 'pageview');
     </nav>
     <nav class="main">
         <ul>
-            
-            <li id="share-nav" class="share-menu" style="display:none;">
-                <a class="fa-share-alt" href="#share-menu">Share</a>
-            </li>
             
             <li class="search">
                 <a class="fa-search" href="#search">Search</a>
@@ -213,6 +216,11 @@ ga('send', 'pageview');
     
     <div id="main">
         
+        
+            
+        
+
+        
             <article class="post">
     <header>
     <div class="title">
@@ -237,176 +245,14 @@ ga('send', 'pageview');
     </div>
 </header>
 
-
-    <section id="social-share">
-        <ul class="icons">
-            
-
-
-<li><a href="//twitter.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&text=Running%20Redis%202.6%20on%20Docker&via=crsmithdev" target="_blank" class="share-btn twitter">
-    <i class="fa fa-twitter"></i>
-    <p>Twitter</p>
-</a></li>
-
-
-<li><a href="//plus.google.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn google-plus">
-    <i class="fa fa-google-plus"></i>
-    <p>Google+</p>
-</a></li>
-
-
-<li><a href="//www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn facebook">
-    <i class="fa fa-facebook"></i>
-    <p>Facebook</p>
-</a></li>
-
-
-<li><a href="//reddit.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn reddit">
-    <i class="fa fa-reddit-alien"></i>
-    <p>Reddit</p>
-</a></li>
-
-
-<li><a href="//www.linkedin.com/shareArticle?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn linkedin">
-    <i class="fa fa-linkedin"></i>
-    <p>LinkedIn</p>
-</a></li>
-
-
-<li><a href="//www.stumbleupon.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn stumbleupon">
-    <i class="fa fa-stumbleupon"></i>
-    <p>StumbleUpon</p>
-</a></li>
-
-
-<li><a href="mailto:?subject=Check out this post by &body=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn email">
-    <i class="fa fa-envelope"></i>
-    <p>Email</p>
-</a></li>
-
-        </ul>
-    </section>
     
 
-    <div id="content">
-        
-
-<h2 id="running-redis-2-6-on-docker:72e358964074813b42c64aae0688fb84">Running Redis 2.6 on Docker</h2>
-
-<h3 id="docker:72e358964074813b42c64aae0688fb84">Docker</h3>
-
-<p>With the end of my free tier eligibility looming on AWS, I took advantage of the <a href="http://developer.rackspace.com/devtrial/">Rackspace developer discount</a> and set up a new account and personal server this weekend.  One of the technologies I&rsquo;ve been most interested in recently is <a href="http://www.docker.io">Docker</a>, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies.  A brand-new box seemed like the perfect time to dig in to it.</p>
-
-<p>To get a sense of what Docker is and how it works, I&rsquo;d recommend going through the <a href="http://www.docker.io/gettingstarted/">getting started</a> tutorial as well as some of the examples in the <a href="http://docs.docker.io/en/latest/">documentation</a>.  However, here&rsquo;s a very brief rundown:</p>
-
-<ul>
-<li>Docker uses <a href="https://en.wikipedia.org/wiki/LXC">LXC</a> and a <a href="https://en.wikipedia.org/wiki/Union_filesystem">union file system</a> (<a href="https://en.wikipedia.org/wiki/Aufs">AUFS</a>) to run isolated containers (<strong>not</strong> VMs).</li>
-<li>Software and its dependencies are packaged into an <strong>image</strong>.</li>
-<li>Images are immutable and stateless.</li>
-<li>Images can be committed in layers to form more complex images.</li>
-<li>An image running a process is called a <strong>container</strong>, which is stateful.</li>
-<li>A container exists as running or stopped, and can be run interactively or in the background.</li>
-<li>Images are lightweight, perhaps 100Mb for a Redis server running on Ubuntu.</li>
-<li>Containers are not virtual machines, so they are lightening-fast to boot and lightweight on resources.</li>
-</ul>
-
-<p>One of the documentation examples describes setting up a <a href="http://redis.io">Redis</a> service.  Following the example was straightforward, but I felt it was missing two things when I was finished.  First, it uses Redis 2.4, which is already quite out of date (as of this writing, Redis 2.8 is nearing release).  Plus, it felt awkward having to specify a lengthy command and config file each time the container started.</p>
-
-<h3 id="installing-redis-2-6:72e358964074813b42c64aae0688fb84">Installing Redis 2.6</h3>
-
-<p>The first thing to do is start a container from a base image, in this case the <code>ubuntu</code> image pulled during setup:</p>
-
-<pre><code>sudo docker run -i -t ubuntu /bin/bash
-</code></pre>
-
-<p>This results in a root shell on a new, running Ubuntu container.  A few things will be needed in order to download, build and test Redis:</p>
-
-<pre><code>apt-get install wget build-essential tcl8.5
-</code></pre>
-
-<p>To install Redis 2.6, it&rsquo;s necessary to build it from source:</p>
-
-<pre><code>wget get http://download.redis.io/releases/redis-2.6.16.tar.gz
-tar xvf redis-2.6.16.tar.gz
-cd redis-2.6.16
-</code></pre>
-
-<p>Build it, run some tests and install once completed:</p>
-
-<pre><code>make
-make test
-make install
-</code></pre>
-
-<p>Lastly, move the config file to a more standard location:</p>
-
-<pre><code>mkdir /etc/redis
-mv redis.conf /etc/redis/redis.conf
-</code></pre>
-
-<p>Verify the server is working by running the following:</p>
-
-<pre><code>redis-server /etc/redis/redis.conf
-</code></pre>
-
-<h3 id="run-commands-and-images:72e358964074813b42c64aae0688fb84">Run commands and images</h3>
-
-<p>In the example, the resulting container is committed to an image, and then run:</p>
-
-<pre><code>sudo docker commit &lt;container_id&gt; crsmithdev/redis
-sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/redis.conf
-</code></pre>
-
-<p>This is still a bit clunky &mdash; why do <code>redis-server</code> and the config file have to be specified each time it&rsquo;s run?  Forunately, they can be built into the image itself:</p>
-
-<pre><code>sudo docker commit -run='{&quot;Cmd&quot;:[&quot;/usr/local/bin/redis-server&quot;, &quot;/etc/redis/redis.conf&quot;]}' \
-    &lt;container_id&gt; crsmithdev/redis2.6
-</code></pre>
-
-<p>That way, you can run the container like so:</p>
-
-<pre><code>sudo docker run -d -p 6379:6379 crsmithdev/redis2.6
-</code></pre>
-
-<p>Specifying -p 6379:6379 ensures that the server&rsquo;s port 6379 is mapped to the container&rsquo;s port 6379.  Otherwise, Docker will assign a random local server port in the 49000s, which is probably unwanted in most non-development environments.</p>
-
-<p>Note that it is still possible to override the image-specified run command.  The following will open a shell using the image, instead of launching Redis:</p>
-
-<pre><code>sudo docker run -i -t crsmithdev/redis2.6 /bin/bash
-</code></pre>
-
-<h3 id="handling-data:72e358964074813b42c64aae0688fb84">Handling data</h3>
-
-<p>One important point:  what about the data and log files that result from the Redis process?  Every time I run Redis from that image, I get a new container with fresh data.  That&rsquo;s ideal for some situations, but less so for for others: in a production environment, it&rsquo;s entirely possible I&rsquo;d want to be able to start a new Redis container, but be able to load a dumpfile from a previous one.</p>
-
-<p>Fortunately, you can share one or more volumes with the host server easily.  Modify <code>redis.conf</code> on the container to specify a dumpfile location of your choice:</p>
-
-<pre><code>dir /data/redis
-</code></pre>
-
-<p>Then, run the image specifying a mount point on the server:</p>
-
-<pre><code>sudo docker run -d -p 6379:6379 -v /mnt/redis:/data/redis:rw crsmithdev/redis2.6
-</code></pre>
-
-<p>Connecting via <code>redis-cli</code> and executing <code>SAVE</code> should result in a <code>dump.rdb</code> file in <code>/mnt/redis</code>.  Redis will be logging to stdout unless specified otherwise, so the logs are viewable using a Docker command:</p>
-
-<pre><code>sudo docker logs &lt;container_d&gt;
-</code></pre>
-
-<p>If you specify a different logfile location in <code>redis.conf</code>, it&rsquo;s possible to add a second volume to the <code>run</code> command.</p>
-
-<h3 id="fin:72e358964074813b42c64aae0688fb84">Fin!</h3>
-
-<p>And that&rsquo;s it.  This image can then be downloaded and started, producing a running, fully-functional Redis server in literally a few seconds.</p>
-
-<p>You can grab my image <a href="https://index.docker.io/u/crsmithdev/redis2.6/">here</a>.</p>
-
-<p><strong>UPDATE 9-15 - updated container run arguments, and added a bit about volumes.</strong></p>
-
-    </div>
+    <p>Running Redis 2.6 on Docker Docker With the end of my free tier eligibility looming on AWS, I took advantage of the Rackspace developer discount and set up a new account and personal server this weekend. One of the technologies I&rsquo;ve been most interested in recently is Docker, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies. A brand-new box seemed like the perfect time to dig in to it.</p>
 
     <footer>
+        <ul class="actions">
+            <li><a href="http://hugo.spf13.com/blog/running-redis-26-on-docker/" class="button big">Continue Reading</a></li>
+        </ul>
         <ul class="stats">
     
 
@@ -416,74 +262,106 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 
     </footer>
 </article>
-<ul class="actions pagination">
-    
-        <li><a href="http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/"
-                class="button big previous">A Blog Refresh with Bootstrap and Static</a></li>
+
+        
+            <article class="post">
+    <header>
+    <div class="title">
+        
+            <h2><a href="http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/">A Blog Refresh with Bootstrap and Static</a></h2>
+        
+        
+    </div>
+    <div class="meta">
+        
+            
+        
+
+        <time class="published"
+            datetime='2013-06-02'>
+            June 2, 2013</time>
+        <span class="author"></span>
+        
+            <p>10 minute read</p>
+        
+        
+    </div>
+</header>
+
     
 
+    <p>A Blog Refresh with Bootstrap 3 and Static Previously Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year. My needs were simple: it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in no way to be the technology or process of creating and maintaining it. Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for writing, not to go on a technical adventure in creating one.</p>
+
+    <footer>
+        <ul class="actions">
+            <li><a href="http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/" class="button big">Continue Reading</a></li>
+        </ul>
+        <ul class="stats">
+    
+
+    
     
 </ul>
 
-
-
-
-
-            <section id="share-menu">
-    <section id="social-share-nav">
-        <ul class="links">
-            <header>
-                <h3>Share this post <i class="fa fa-smile-o"></i></h3>
-            </header>
-            
-
-
-<li><a href="//twitter.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&text=Running%20Redis%202.6%20on%20Docker&via=crsmithdev" target="_blank" class="share-btn twitter">
-    <i class="fa fa-twitter"></i>
-    <p>Twitter</p>
-</a></li>
-
-
-<li><a href="//plus.google.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn google-plus">
-    <i class="fa fa-google-plus"></i>
-    <p>Google+</p>
-</a></li>
-
-
-<li><a href="//www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn facebook">
-    <i class="fa fa-facebook"></i>
-    <p>Facebook</p>
-</a></li>
-
-
-<li><a href="//reddit.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn reddit">
-    <i class="fa fa-reddit-alien"></i>
-    <p>Reddit</p>
-</a></li>
-
-
-<li><a href="//www.linkedin.com/shareArticle?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn linkedin">
-    <i class="fa fa-linkedin"></i>
-    <p>LinkedIn</p>
-</a></li>
-
-
-<li><a href="//www.stumbleupon.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn stumbleupon">
-    <i class="fa fa-stumbleupon"></i>
-    <p>StumbleUpon</p>
-</a></li>
-
-
-<li><a href="mailto:?subject=Check out this post by &body=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn email">
-    <i class="fa fa-envelope"></i>
-    <p>Email</p>
-</a></li>
-
-        </ul>
-    </section>
-</section>
+    </footer>
+</article>
 
         
+            <article class="post">
+    <header>
+    <div class="title">
+        
+            <h2><a href="http://hugo.spf13.com/blog/building-better-email-habits-with-mailbox/">Building Better Email Habits with Mailbox</a></h2>
+        
+        
+    </div>
+    <div class="meta">
+        
+            
+        
+
+        <time class="published"
+            datetime='2013-03-26'>
+            March 26, 2013</time>
+        <span class="author"></span>
+        
+            <p>9 minute read</p>
+        
+        
+    </div>
+</header>
+
+    
+
+    <p>Building Better Email Habits with Mailbox Introduction As my first-ever blog post, I&rsquo;m presenting my recent experience with the recent email app, Mailbox. This is less about the app itself, however (or it recently being snapped up by Dropbox for $100 million), but more about how I used it to help me examine and improve my behavior when it comes to handling and communicating via email. Mailbox Briefly, Mailbox is an iPhone app that integrates aggressively with one or more of your email accounts (GMail only, for now), and through a gesture-focused UI presents four actions to be taken on any one email: archive it, delete it, reschedule it for later, or send it to a list.</p>
+
+    <footer>
+        <ul class="actions">
+            <li><a href="http://hugo.spf13.com/blog/building-better-email-habits-with-mailbox/" class="button big">Continue Reading</a></li>
+        </ul>
+        <ul class="stats">
+    
+
+    
+    
+</ul>
+
+    </footer>
+</article>
+
+        
+
+        
+<ul class="actions pagination">
+    
+        <li><a href="#" class="disabled button big previous">Previous Page</a></li>
+    
+
+    
+        <li><a href="#" class="disabled button big next">Next Page</a></li>
+    
+</ul>
+
     </div>
     
 <section id="sidebar">
@@ -500,7 +378,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
             
             <ul class="icons">
                 
-                    <li><a href="http://hugo.spf13.com/index.xml" type="application/rss+xml"
+                    <li><a href="http://hugo.spf13.com/blog/index.xml" type="application/rss+xml"
                         target="_blank" title="RSS" class="fa fa-rss"></a></li>
                 
                 
@@ -666,7 +544,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
         <section id="footer">
             <ul class="icons">
                 
-                    <li><a href="http://hugo.spf13.com/index.xml" type="application/rss+xml"
+                    <li><a href="http://hugo.spf13.com/blog/index.xml" type="application/rss+xml"
                         target="_blank" title="RSS" class="fa fa-rss"></a></li>
                 
                 

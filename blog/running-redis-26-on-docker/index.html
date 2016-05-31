@@ -4,7 +4,7 @@
     <head>
         
             
-                <title>Chris Smith</title>
+                <title>Running Redis 2.6 on Docker</title>
             
         
 
@@ -22,12 +22,23 @@
         
 
         
-        <meta property="og:title" content="Chris Smith" />
-<meta property="og:description" content="HTML5 UP theme, Future Imperfect with some extra goodies, ported by Julio Pescador. Powered by Hugo" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://hugo.spf13.com/" />
+
+  <meta name="twitter:card" content="summary"/>
 
 
+
+<meta name="twitter:title" content="Running Redis 2.6 on Docker"/>
+<meta name="twitter:description" content="Running Redis 2.6 on Docker Docker With the end of my free tier eligibility looming on AWS, I took advantage of the Rackspace developer discount and set up a new account and personal server this weekend. One of the technologies I&rsquo;ve been most interested in recently is Docker, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies. A brand-new box seemed like the perfect time to dig in to it."/>
+<meta name="twitter:site" content="@crsmithdev"/>
+
+
+        <meta property="og:title" content="Running Redis 2.6 on Docker" />
+<meta property="og:description" content="Running Redis 2.6 on Docker Docker With the end of my free tier eligibility looming on AWS, I took advantage of the Rackspace developer discount and set up a new account and personal server this weekend. One of the technologies I&rsquo;ve been most interested in recently is Docker, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies. A brand-new box seemed like the perfect time to dig in to it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://hugo.spf13.com/blog/running-redis-26-on-docker/" />
+
+
+<meta property="og:updated_time" content="2013-09-15T11:34:46&#43;07:00"/>
 
 
 
@@ -39,9 +50,16 @@
 
 
         
-<meta itemprop="name" content="Chris Smith">
-<meta itemprop="description" content="HTML5 UP theme, Future Imperfect with some extra goodies, ported by Julio Pescador. Powered by Hugo">
+<meta itemprop="name" content="Running Redis 2.6 on Docker">
+<meta itemprop="description" content="Running Redis 2.6 on Docker Docker With the end of my free tier eligibility looming on AWS, I took advantage of the Rackspace developer discount and set up a new account and personal server this weekend. One of the technologies I&rsquo;ve been most interested in recently is Docker, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies. A brand-new box seemed like the perfect time to dig in to it.">
 
+
+<meta itemprop="dateModified" content="2013-09-15T11:34:46&#43;07:00" />
+<meta itemprop="wordCount" content="774">
+
+
+
+<meta itemprop="keywords" content="" />
 
         
 
@@ -88,7 +106,7 @@ ga('send', 'pageview');
     
 <header id="header">
     
-        <h1><a href="/">Chris Smith</i></a></h1>
+        <h2><a href="/">Chris Smith</i></a></h2>
     
 
     <nav class="links">
@@ -210,14 +228,70 @@ ga('send', 'pageview');
         
 </section>
 
+    <section id="share-menu">
+    <section id="social-share-nav">
+        <ul class="links">
+            <header>
+                <h3>Share this post <i class="fa fa-smile-o"></i></h3>
+            </header>
+            
+
+
+<li><a href="//twitter.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&text=Running%20Redis%202.6%20on%20Docker&via=crsmithdev" target="_blank" class="share-btn twitter">
+    <i class="fa fa-twitter"></i>
+    <p>Twitter</p>
+</a></li>
+
+
+<li><a href="//plus.google.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn google-plus">
+    <i class="fa fa-google-plus"></i>
+    <p>Google+</p>
+</a></li>
+
+
+<li><a href="//www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn facebook">
+    <i class="fa fa-facebook"></i>
+    <p>Facebook</p>
+</a></li>
+
+
+<li><a href="//reddit.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn reddit">
+    <i class="fa fa-reddit-alien"></i>
+    <p>Reddit</p>
+</a></li>
+
+
+<li><a href="//www.linkedin.com/shareArticle?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn linkedin">
+    <i class="fa fa-linkedin"></i>
+    <p>LinkedIn</p>
+</a></li>
+
+
+<li><a href="//www.stumbleupon.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn stumbleupon">
+    <i class="fa fa-stumbleupon"></i>
+    <p>StumbleUpon</p>
+</a></li>
+
+
+<li><a href="mailto:?subject=Check out this post by &body=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn email">
+    <i class="fa fa-envelope"></i>
+    <p>Email</p>
+</a></li>
+
+        </ul>
+    </section>
+</section>
+
     
     <div id="main">
         
-            <article class="post">
+        
+        <article class="post">
     <header>
     <div class="title">
         
-            <h2><a href="http://hugo.spf13.com/blog/running-redis-26-on-docker/">Running Redis 2.6 on Docker</a></h2>
+            <h1><a href="http://hugo.spf13.com/blog/running-redis-26-on-docker/">Running Redis 2.6 on Docker</a></h1>
+            
         
         
     </div>
@@ -428,62 +502,6 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 
 
 
-
-            <section id="share-menu">
-    <section id="social-share-nav">
-        <ul class="links">
-            <header>
-                <h3>Share this post <i class="fa fa-smile-o"></i></h3>
-            </header>
-            
-
-
-<li><a href="//twitter.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&text=Running%20Redis%202.6%20on%20Docker&via=crsmithdev" target="_blank" class="share-btn twitter">
-    <i class="fa fa-twitter"></i>
-    <p>Twitter</p>
-</a></li>
-
-
-<li><a href="//plus.google.com/share?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn google-plus">
-    <i class="fa fa-google-plus"></i>
-    <p>Google+</p>
-</a></li>
-
-
-<li><a href="//www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn facebook">
-    <i class="fa fa-facebook"></i>
-    <p>Facebook</p>
-</a></li>
-
-
-<li><a href="//reddit.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn reddit">
-    <i class="fa fa-reddit-alien"></i>
-    <p>Reddit</p>
-</a></li>
-
-
-<li><a href="//www.linkedin.com/shareArticle?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn linkedin">
-    <i class="fa fa-linkedin"></i>
-    <p>LinkedIn</p>
-</a></li>
-
-
-<li><a href="//www.stumbleupon.com/submit?url=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f&title=Running%20Redis%202.6%20on%20Docker" target="_blank" class="share-btn stumbleupon">
-    <i class="fa fa-stumbleupon"></i>
-    <p>StumbleUpon</p>
-</a></li>
-
-
-<li><a href="mailto:?subject=Check out this post by &body=http%3a%2f%2fhugo.spf13.com%2fblog%2frunning-redis-26-on-docker%2f" target="_blank" class="share-btn email">
-    <i class="fa fa-envelope"></i>
-    <p>Email</p>
-</a></li>
-
-        </ul>
-    </section>
-</section>
-
-        
     </div>
     
 <section id="sidebar">
@@ -499,9 +517,6 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
                 </header>
             
             <ul class="icons">
-                
-                    <li><a href="http://hugo.spf13.com/index.xml" type="application/rss+xml"
-                        target="_blank" title="RSS" class="fa fa-rss"></a></li>
                 
                 
                     
@@ -665,9 +680,6 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
     
         <section id="footer">
             <ul class="icons">
-                
-                    <li><a href="http://hugo.spf13.com/index.xml" type="application/rss+xml"
-                        target="_blank" title="RSS" class="fa fa-rss"></a></li>
                 
                 
                     

@@ -1,2 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>http://crsmithdev.com</loc></url><url><loc>http://crsmithdev.com/2013/03/26/building-better-email-habits-with-mailbox/</loc></url><url><loc>http://crsmithdev.com/2013/09/02/a-blog-refresh-with-bootstrap-and-static/</loc></url><url><loc>http://crsmithdev.com/2013/09/15/running-redis-26-on-docker/</loc></url><url><loc>http://crsmithdev.com/about.html</loc></url><url><loc>http://crsmithdev.com/blog.html</loc></url><url><loc>http://crsmithdev.com/index.html</loc></url><url><loc>http://crsmithdev.com/projects.html</loc></url></urlset>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://hugo.spf13.com/</loc>
+    <lastmod>2016-05-31T12:10:20+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://hugo.spf13.com/projects/</loc>
+    <lastmod>2016-05-31T12:10:20+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://hugo.spf13.com/about/</loc>
+    <lastmod>2016-05-31T12:01:44+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://hugo.spf13.com/blog/running-redis-26-on-docker/</loc>
+    <lastmod>2013-09-15T11:34:46+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/</loc>
+    <lastmod>2013-06-02T11:34:28+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://hugo.spf13.com/blog/building-better-email-habits-with-mailbox/</loc>
+    <lastmod>2013-03-26T11:31:53+07:00</lastmod>
+  </url>
+  
+</urlset>
