@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blogs on Chris Smith</title>
-    <link>http://hugo.spf13.com/blog/</link>
+    <link>http://crsmithdev.com/blog/</link>
     <description>Recent content in Blogs on Chris Smith</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Sep 2013 11:34:46 +0700</lastBuildDate>
-    <atom:link href="http://hugo.spf13.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://crsmithdev.com/blog/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Running Redis 2.6 on Docker</title>
-      <link>http://hugo.spf13.com/blog/running-redis-26-on-docker/</link>
+      <link>http://crsmithdev.com/blog/running-redis-26-on-docker/</link>
       <pubDate>Sun, 15 Sep 2013 11:34:46 +0700</pubDate>
       
-      <guid>http://hugo.spf13.com/blog/running-redis-26-on-docker/</guid>
+      <guid>http://crsmithdev.com/blog/running-redis-26-on-docker/</guid>
       <description>
 
 &lt;h2 id=&#34;running-redis-2-6-on-docker:72e358964074813b42c64aae0688fb84&#34;&gt;Running Redis 2.6 on Docker&lt;/h2&gt;
@@ -134,10 +134,10 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
     
     <item>
       <title>A Blog Refresh with Bootstrap and Static</title>
-      <link>http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/</link>
+      <link>http://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</link>
       <pubDate>Sun, 02 Jun 2013 11:34:28 +0700</pubDate>
       
-      <guid>http://hugo.spf13.com/blog/a-blog-refresh-with-bootstrap-and-static/</guid>
+      <guid>http://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</guid>
       <description>
 
 &lt;h2 id=&#34;a-blog-refresh-with-bootstrap-3-and-static:fe236af735f282018ecf873fea2074ac&#34;&gt;A Blog Refresh with Bootstrap 3 and Static&lt;/h2&gt;
@@ -146,7 +146,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 
 &lt;p&gt;Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year.  My needs were simple:  it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in &lt;strong&gt;no&lt;/strong&gt; way to be the technology or process of creating and maintaining it.  Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for &lt;em&gt;writing&lt;/em&gt;, not to go on a technical adventure in creating one.  Although I&amp;rsquo;ve only written two posts on it so far, the effort was successful: in short order, I&amp;rsquo;d set up &lt;a href=&#34;http://octopress.org&#34;&gt;Octopress&lt;/a&gt; and had it deploying to Pages.  The result looked like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&#34;img-responsive img-thumbnail blog-image&#34; src=&#34;http://hugo.spf13.com/img/crsmithdev_com_old.jpg&#34;/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&#34;img-responsive img-thumbnail blog-image&#34; src=&#34;http://crsmithdev.com/img/crsmithdev_com_old.jpg&#34;/&gt;&lt;/p&gt;
 
 &lt;p&gt;I found it usable but lacking in a few key ways, the most significant of which was that I was simply underwhelmed with the themes available for Octopress, and had little interest in building a new theme or heavily modifying an existing one.  Moreover, it felt very much like a monolithic framework, into a tiny corner of which were tucked the contents of my blog.  I realized that what I wanted was a simple engine that would handle the work of converting Markdown to HTML and stitching the results together with templates, but would otherwise stay out of the way as much as possible, impose little structure and even less of its own code on me, and give me total control over the design without relying on theming.&lt;/p&gt;
 
@@ -456,10 +456,10 @@ var toDateString = function(date) {
     
     <item>
       <title>Building Better Email Habits with Mailbox</title>
-      <link>http://hugo.spf13.com/blog/building-better-email-habits-with-mailbox/</link>
+      <link>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</link>
       <pubDate>Tue, 26 Mar 2013 11:31:53 +0700</pubDate>
       
-      <guid>http://hugo.spf13.com/blog/building-better-email-habits-with-mailbox/</guid>
+      <guid>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</guid>
       <description>
 
 &lt;h2 id=&#34;building-better-email-habits-with-mailbox:3973863d6a215daa77edc0d6751f8485&#34;&gt;Building Better Email Habits with Mailbox&lt;/h2&gt;
