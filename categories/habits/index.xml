@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>habits on Chris Smith</title>
-    <link>http://crsmithdev.com/categories/habits/index.xml</link>
+    <link>https://crsmithdev.com/categories/habits/index.xml</link>
     <description>Recent content in habits on Chris Smith</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://crsmithdev.com/categories/habits/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://crsmithdev.com/categories/habits/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Building Better Email Habits with Mailbox</title>
-      <link>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</link>
+      <link>https://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</link>
       <pubDate>Tue, 26 Mar 2013 11:31:53 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</guid>
+      <guid>https://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;As my first-ever blog post, I&amp;rsquo;m presenting my recent experience with the recent email app, &lt;a href=&#34;http://mailboxapp.com&#34;&gt;Mailbox&lt;/a&gt;.  This is less about the app itself, however (or it recently being snapped up by Dropbox for $100 million), but more about how I used it to help me examine and improve my behavior when it comes to handling and communicating via email.&lt;/p&gt;

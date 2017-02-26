@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>code on Chris Smith</title>
-    <link>http://crsmithdev.com/categories/code/index.xml</link>
+    <link>https://crsmithdev.com/categories/code/index.xml</link>
     <description>Recent content in code on Chris Smith</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://crsmithdev.com/categories/code/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://crsmithdev.com/categories/code/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Running Redis 2.6 on Docker</title>
-      <link>http://crsmithdev.com/blog/running-redis-26-on-docker/</link>
+      <link>https://crsmithdev.com/blog/running-redis-26-on-docker/</link>
       <pubDate>Sun, 15 Sep 2013 11:34:46 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/running-redis-26-on-docker/</guid>
+      <guid>https://crsmithdev.com/blog/running-redis-26-on-docker/</guid>
       <description>&lt;h1 id=&#34;docker&#34;&gt;Docker&lt;/h1&gt;
 
 &lt;p&gt;With the end of my free tier eligibility looming on AWS, I took advantage of the &lt;a href=&#34;http://developer.rackspace.com/devtrial/&#34;&gt;Rackspace developer discount&lt;/a&gt; and set up a new account and personal server this weekend.  One of the technologies I&amp;rsquo;ve been most interested in recently is &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt;, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies.  A brand-new box seemed like the perfect time to dig in to it.&lt;/p&gt;
@@ -130,10 +130,10 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
     
     <item>
       <title>A Blog Refresh with Bootstrap and Static</title>
-      <link>http://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</link>
+      <link>https://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</link>
       <pubDate>Sun, 02 Jun 2013 11:34:28 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</guid>
+      <guid>https://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</guid>
       <description>&lt;p&gt;Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year.  My needs were simple:  it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in &lt;strong&gt;no&lt;/strong&gt; way to be the technology or process of creating and maintaining it.  Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for &lt;em&gt;writing&lt;/em&gt;, not to go on a technical adventure in creating one.  Although I&amp;rsquo;ve only written two posts on it so far, the effort was successful: in short order, I&amp;rsquo;d set up &lt;a href=&#34;http://octopress.org&#34;&gt;Octopress&lt;/a&gt; and had it deploying to Pages.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;

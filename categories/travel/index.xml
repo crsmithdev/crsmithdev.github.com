@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>travel on Chris Smith</title>
-    <link>http://crsmithdev.com/categories/travel/index.xml</link>
+    <link>https://crsmithdev.com/categories/travel/index.xml</link>
     <description>Recent content in travel on Chris Smith</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://crsmithdev.com/categories/travel/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://crsmithdev.com/categories/travel/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Linear Regression for Machine Learning</title>
-      <link>http://crsmithdev.com/blog/ml-linear-regression/</link>
+      <link>https://crsmithdev.com/blog/ml-linear-regression/</link>
       <pubDate>Sun, 26 Feb 2017 21:00:11 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/ml-linear-regression/</guid>
+      <guid>https://crsmithdev.com/blog/ml-linear-regression/</guid>
       <description>
 
 &lt;p&gt;This is the first of a series of posts in which I&amp;rsquo;ll be exploring concepts taught in Andrew Ng&amp;rsquo;s &lt;a href=&#34;https://www.coursera.org/learn/machine-learning&#34;&gt;Introduction to Machine Learning&lt;/a&gt; course on Coursera.  As a CS student, I enjoyed doing odd or extra things with my assignments — I found it added a greater challenge and allowed me to learn outside the scope of the class in a well-structured way.  So, as I progress through this course, I&amp;rsquo;ll be posting another take on the coursework in Python, using a Jupyter notebook.&lt;/p&gt;
@@ -54,7 +54,7 @@ plt.xlabel(&#39;Normalized Temperature in C&#39;)
 plt.ylabel(&#39;Bike Rentals in 1000s&#39;)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_5_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_5_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&#34;simple-linear-regression&#34;&gt;Simple Linear Regression&lt;/h1&gt;
 
@@ -138,7 +138,7 @@ samples = np.linspace(min(temps), max(temps))
 plt.plot(samples, theta[0] + theta[1] * samples)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_14_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_14_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A surface plot is a better illustration of how gradient descent approaches a global minimum, plotting the values for $\theta$ against their associated cost.  This requires a bit more code than an implementation in Octave / MATLAB, largely due to how the input data is generated and fed to the surface plot function.&lt;/p&gt;
 
@@ -158,7 +158,7 @@ ax.view_init(elev=25, azim=40)
 ax.plot_surface(Xs, Ys, Zs, cmap=cm.rainbow)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_16_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_16_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Finally, a countour plot reveals slices of that surface plot in 2D space, and can show the resulting $\theta$ values sitting exactly at the global minimum.&lt;/p&gt;
 
@@ -167,7 +167,7 @@ ax.plot(theta[0], theta[1], &#39;r*&#39;)
 plt.contour(Xs, Ys, Zs, np.logspace(-3, 3, 15))
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_18_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_18_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&#34;multiple-linear-regression&#34;&gt;Multiple Linear Regression&lt;/h1&gt;
 
@@ -306,11 +306,11 @@ weights: [[ 1.22203839]
     
     <item>
       <title>Hotel Gracery Shinjuku</title>
-      <link>http://crsmithdev.com/blog/hotel-gracery-shinjuku/</link>
+      <link>https://crsmithdev.com/blog/hotel-gracery-shinjuku/</link>
       <pubDate>Tue, 07 Jun 2016 21:00:11 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/hotel-gracery-shinjuku/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/hotel-gracery.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
+      <guid>https://crsmithdev.com/blog/hotel-gracery-shinjuku/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/hotel-gracery.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The Hotel Gracery is located in &lt;a href=&#34;https://en.wikipedia.org/wiki/Kabukich%C5%8D,_Tokyo&#34;&gt;Kabukichō, Tokyo&lt;/a&gt;, just northeast of Shinjuku station. It looks something like an Alienware &lt;a href=&#34;http://www.alienware.com/landings/desktops.aspx&#34;&gt;tower&lt;/a&gt;, especially when viewed from the street as pictured above. Notably, the cinema attached to the hotel features a &lt;a href=&#34;http://en.rocketnews24.com/2014/12/11/full-size-godzilla-head-to-terrorize-moviegoers-and-hotel-guests-in-tokyo-starting-next-spring/&#34;&gt;full-size Godzilla head&lt;/a&gt; which can be seen peeking over the rooftop.&lt;/p&gt;
 
@@ -321,11 +321,11 @@ weights: [[ 1.22203839]
     
     <item>
       <title>Yushima Tenman-gū</title>
-      <link>http://crsmithdev.com/blog/yushima-tenman-gu/</link>
+      <link>https://crsmithdev.com/blog/yushima-tenman-gu/</link>
       <pubDate>Sun, 05 Jun 2016 21:00:11 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/yushima-tenman-gu/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/yushima-shrine.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
+      <guid>https://crsmithdev.com/blog/yushima-tenman-gu/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/yushima-shrine.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Yushima_Tenman-g%C5%AB&#34;&gt;Yushima Tenman-gū&lt;/a&gt; is a small Shinto shrine in northern Tokyo I found after getting off at the wrong train station on the way to &lt;a href=&#34;https://en.wikipedia.org/wiki/Ueno_Park&#34;&gt;Ueno Park&lt;/a&gt;.  The building pictured above is actually not the main shrine itself, but one of the other buildings in the complex.&lt;/p&gt;
 
@@ -339,16 +339,16 @@ weights: [[ 1.22203839]
 
 &lt;p&gt;I also ran into this content-looking little guy at the shrine:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/yushima-bull.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/yushima-bull.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>The Mode Gakuen Cocoon Tower</title>
-      <link>http://crsmithdev.com/blog/mode-gakuen-cocoon-tower/</link>
+      <link>https://crsmithdev.com/blog/mode-gakuen-cocoon-tower/</link>
       <pubDate>Sat, 04 Jun 2016 11:47:20 +0700</pubDate>
       
-      <guid>http://crsmithdev.com/blog/mode-gakuen-cocoon-tower/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/mode-gakuen.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
+      <guid>https://crsmithdev.com/blog/mode-gakuen-cocoon-tower/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://crsmithdev.com/images/mode-gakuen.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;One of my favorite buildings in Tokyo is the &lt;a href=&#34;https://en.wikipedia.org/wiki/Mode_Gakuen_Cocoon_Tower&#34;&gt;Mode Gakuen Cocoon Tower&lt;/a&gt;.  Located in Shinjuku, it&amp;rsquo;s one of the most striking buildings on the skyline.  The above is shot from an unusual angle, looking up from an opening in the pedestrian tunnel that leads west from the station.&lt;/p&gt;
 
