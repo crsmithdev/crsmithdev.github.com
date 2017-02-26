@@ -2,25 +2,322 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Chris Smith</title>
-    <link>http://crsmithdev.com/</link>
+    <link>http://crsmithdev.com/index.xml</link>
     <description>Recent content on Chris Smith</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jun 2016 19:00:47 +0700</lastBuildDate>
+    <lastBuildDate>Sun, 26 Feb 2017 21:00:11 +0700</lastBuildDate>
     <atom:link href="http://crsmithdev.com/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>hotel gracery shinjuku</title>
+      <title>Linear Regression for Machine Learning</title>
+      <link>http://crsmithdev.com/blog/ml-linear-regression/</link>
+      <pubDate>Sun, 26 Feb 2017 21:00:11 +0700</pubDate>
+      
+      <guid>http://crsmithdev.com/blog/ml-linear-regression/</guid>
+      <description>
+
+&lt;p&gt;This is the first of a series of posts in which I&amp;rsquo;ll be exploring concepts taught in Andrew Ng&amp;rsquo;s &lt;a href=&#34;https://www.coursera.org/learn/machine-learning&#34;&gt;Introduction to Machine Learning&lt;/a&gt; course on Coursera.  As a CS student, I enjoyed doing odd or extra things with my assignments — I found it added a greater challenge and allowed me to learn outside the scope of the class in a well-structured way.  So, as I progress through this course, I&amp;rsquo;ll be posting another take on the coursework in Python, using a Jupyter notebook.&lt;/p&gt;
+
+&lt;p&gt;Each post will begin with an implementation of the algorithm for the week, tracking closely to the requirements and terminology of the assignment, but trading Octave/MATLAB functions for standard Python data science tools, and then conclude by exploring what the same algorithm would look like built in &lt;a href=&#34;https://www.tensorflow.org/&#34;&gt;Tensorflow&lt;/a&gt;.  I&amp;rsquo;ll also be using different data sets, to make things a bit more interesting, and to avoid duplicating material from the course.&lt;/p&gt;
+
+&lt;p&gt;The first programming assignment covers &lt;a href=&#34;https://en.wikipedia.org/wiki/Linear_regression&#34;&gt;linear regression&lt;/a&gt;.  Linear regression attempts to fit a line of best fit to a data set, using one or more features as coefficients for a linear equation.  Here, I&amp;rsquo;ll discuss:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Loading, manipulating and plotting data using numpy and matplotlib&lt;/li&gt;
+&lt;li&gt;The hypothesis and cost functions for linear regression&lt;/li&gt;
+&lt;li&gt;Gradient descent with one variable and multiple variables&lt;/li&gt;
+&lt;li&gt;Feature scaling and normalization&lt;/li&gt;
+&lt;li&gt;Vectorization and the normal equation&lt;/li&gt;
+&lt;li&gt;Linear regression and gradient descent in Tensorflow&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;m using the &lt;a href=&#34;https://archive.ics.uci.edu/ml/datasets/Bike+Sharing+Dataset&#34;&gt;UCI Bike Sharing Data Set&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;loading-and-plotting-data&#34;&gt;Loading and Plotting Data&lt;/h1&gt;
+
+&lt;p&gt;For the first part, we&amp;rsquo;ll be doing linear regression with one variable, and so we&amp;rsquo;ll use only two fields from the daily data set: the normalized high temperature in C, and the total number of bike rentals.  The values for rentals are scaled by a factor of a thousand, given the  difference in magnitude between them and the normalized temperatures.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import pandas as pd
+
+data = pd.read_csv(&amp;quot;./data.csv&amp;quot;)
+temps = data[&#39;atemp&#39;].values
+rentals = data[&#39;cnt&#39;].values / 1000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The plot reveals some degree of correlation between temperature and bike rentals, as one might guess.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import matplotlib.pyplot as plt
+%matplotlib inline
+
+plt.scatter(temps, rentals, marker=&#39;x&#39;, color=&#39;red&#39;)
+plt.xlabel(&#39;Normalized Temperature in C&#39;)
+plt.ylabel(&#39;Bike Rentals in 1000s&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_5_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;simple-linear-regression&#34;&gt;Simple Linear Regression&lt;/h1&gt;
+
+&lt;p&gt;We&amp;rsquo;ll start by implementing the &lt;a href=&#34;https://en.wikipedia.org/wiki/Loss_function&#34;&gt;cost function&lt;/a&gt; for linear regression, specifically &lt;a href=&#34;https://en.wikipedia.org/wiki/Mean_squared_error&#34;&gt;mean squared error&lt;/a&gt; (MSE).  Intuitively, MSE represents an aggregation of the distances between point&amp;rsquo;s actual y value and what a hypothesis function $h_\theta(x)$ predicted it would be.  That hypothesis function and the cost function $J(\theta)$ are defined as&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;\begin{align}
+h_\theta(x) &amp;amp; = \theta_0 + \theta_1x_1 \\
+J(\theta) &amp;amp; = \frac{1}{2m}\sum\limits_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2
+\end{align}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;where $\theta$ is a vector of feature weights, $x^{(i)}$ is the ith training example, $y^{(i)}$ is that example&amp;rsquo;s y value, and $x_j$ is the value for its jth feature.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import numpy as np
+
+def compute_cost(X, y, theta):
+    return np.sum(np.square(np.matmul(X, theta) - y)) / (2 * len(y))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Before computing the cost with an initial guess for $\theta$, a column of 1s is prepended onto the input data.  This allows us to vectorize the cost function, as well as make it usable for multiple linear regression later.  This first value $\theta_0$ now behaves as a constant in the cost function.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;theta = np.zeros(2)
+X = np.column_stack((np.ones(len(temps)), temps))
+y = rentals
+cost = compute_cost(X, y, theta)
+
+print(&#39;theta:&#39;, theta)
+print(&#39;cost:&#39;, cost)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;theta: [ 0.  0.]
+cost: 12.0184064412
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ll now minimize the cost using the &lt;a href=&#34;https://en.wikipedia.org/wiki/Gradient_descent&#34;&gt;gradient descent&lt;/a&gt; algorithm.  Intuitively, gradient descent takes small, linear hops down the slope of a function in each feature dimension, with the size of each hop determined by the partial derivative of the cost function with respect to that feature and a learning rate multiplier $\alpha$.  If tuned properly, the algorithm converges on a global minimum by iteratively adjusting feature weights $\theta$ of the cost function, as shown here for two feature dimensions:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;\begin{align}
+\theta_0 &amp;amp; := \theta_0 - \alpha\frac{\partial}{\partial\theta_0} J(\theta_0,\theta_1) \\
+\theta_1 &amp;amp; := \theta_1 - \alpha\frac{\partial}{\partial\theta_1} J(\theta_0,\theta_1)
+\end{align}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The update rule each iteration then becomes:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;\begin{align}
+\theta_0 &amp;amp; := \theta_0 - \alpha\frac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)})-y^{(i)}) \\
+\theta_1 &amp;amp; := \theta_1 - \alpha\frac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)})-y^{(i)})x_1^{(i)} \\
+\end{align}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;See &lt;a href=&#34;http://mccormickml.com/2014/03/04/gradient-descent-derivation/&#34;&gt;here&lt;/a&gt; for a more detailed explanation of how the update equations are derived.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def gradient_descent(X, y, alpha, iterations):
+    theta = np.zeros(2)
+    m = len(y)
+
+    for i in range(iterations):
+        t0 = theta[0] - (alpha / m) * np.sum(np.dot(X, theta) - y)
+        t1 = theta[1] - (alpha / m) * np.sum((np.dot(X, theta) - y) * X[:,1])
+        theta = np.array([t0, t1])
+
+    return theta
+
+iterations = 5000
+alpha = 0.1
+
+theta = gradient_descent(X, y, alpha, iterations)
+cost = compute_cost(X, y, theta)
+
+print(&amp;quot;theta:&amp;quot;, theta)
+print(&#39;cost:&#39;, compute_cost(X, y, theta))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;theta: [ 0.94588081  7.50171673]
+cost: 1.12758692584
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can examine the values of $\theta$ chosen by the algorithm using a few different visualizations, first by plotting $h_\theta(x)$ against the input data.  The results show the expected correlation between temperature and rentals.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;plt.scatter(temps, rentals, marker=&#39;x&#39;, color=&#39;red&#39;)
+plt.xlabel(&#39;Normalized Temperature in C&#39;)
+plt.ylabel(&#39;Bike Rentals in 1000s&#39;)
+samples = np.linspace(min(temps), max(temps))
+plt.plot(samples, theta[0] + theta[1] * samples)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_14_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A surface plot is a better illustration of how gradient descent approaches a global minimum, plotting the values for $\theta$ against their associated cost.  This requires a bit more code than an implementation in Octave / MATLAB, largely due to how the input data is generated and fed to the surface plot function.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+
+Xs, Ys = np.meshgrid(np.linspace(-5, 5, 50), np.linspace(-40, 40, 50))
+Zs = np.array([compute_cost(X, y, [t0, t1]) for t0, t1 in zip(np.ravel(Xs), np.ravel(Ys))])
+Zs = np.reshape(Zs, Xs.shape)
+
+fig = plt.figure(figsize=(7,7))
+ax = fig.gca(projection=&amp;quot;3d&amp;quot;)
+ax.set_xlabel(r&#39;t0&#39;)
+ax.set_ylabel(r&#39;t1&#39;)
+ax.set_zlabel(r&#39;cost&#39;)
+ax.view_init(elev=25, azim=40)
+ax.plot_surface(Xs, Ys, Zs, cmap=cm.rainbow)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_16_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, a countour plot reveals slices of that surface plot in 2D space, and can show the resulting $\theta$ values sitting exactly at the global minimum.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;ax = plt.figure().gca()
+ax.plot(theta[0], theta[1], &#39;r*&#39;)
+plt.contour(Xs, Ys, Zs, np.logspace(-3, 3, 15))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/ml-linear-regression//ml-linear-regression_18_1.png#center&#34; alt=&#34;png&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;multiple-linear-regression&#34;&gt;Multiple Linear Regression&lt;/h1&gt;
+
+&lt;p&gt;First, we reload the data and add two more features, humidity and windspeed.&lt;/p&gt;
+
+&lt;p&gt;Before implementing gradient descent for multiple variables, we&amp;rsquo;ll also apply &lt;a href=&#34;https://en.wikipedia.org/wiki/Feature_scaling&#34;&gt;feature scaling&lt;/a&gt; to normalize feature values, preventing any one of them from disproportionately influencing the results, as well as helping gradient descent converge more quickly.  In this case, each feature value is adjusted by subtracting the mean and dividing the result by the standard deviation of all values for that feature:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;$$
+z = \frac{x - \mu}{\sigma}
+$$&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;More details on feature scaling and normalization can be found &lt;a href=&#34;http://sebastianraschka.com/Articles/2014_about_feature_scaling.html&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def feature_normalize(X):
+    n_features = X.shape[1]
+    means = np.array([np.mean(X[:,i]) for i in range(n_features)])
+    stddevs = np.array([np.std(X[:,i]) for i in range(n_features)])
+    normalized = (X - means) / stddevs
+
+    return normalized
+
+X = data.as_matrix(columns=[&#39;atemp&#39;, &#39;hum&#39;, &#39;windspeed&#39;])
+X = feature_normalize(X)
+X = np.column_stack((np.ones(len(X)), X))
+
+y = data[&#39;cnt&#39;].values / 1000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The next step is to implement gradient descent for any number of features.  Fortunately, the update step generalizes easily, and can be vectorized to avoid iterating through $\theta_j$ values as might be suggested by the single variable implementation above:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;$$
+\theta_j := \theta_j - \alpha\frac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}
+$$&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def gradient_descent_multi(X, y, theta, alpha, iterations):
+    theta = np.zeros(X.shape[1])
+    m = len(X)
+
+    for i in range(iterations):
+        cost = (1/m) * np.matmul(X.T, np.matmul(X, theta) - y)
+        theta = theta - alpha * cost
+
+    return theta
+
+theta = gradient_descent_multi(X, y, theta, alpha, iterations)
+cost = compute_cost(X, y, theta)
+
+print(&#39;theta:&#39;, theta)
+print(&#39;cost&#39;, cost)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;theta: [ 4.50434884  1.22203893 -0.45083331 -0.34166068]
+cost 1.00587092471
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unfortunately, it&amp;rsquo;s now more difficult to evaluate the results visually, but we can check them a totally different method of calculating the answer, the &lt;a href=&#34;http://eli.thegreenplace.net/2014/derivation-of-the-normal-equation-for-linear-regression/&#34;&gt;normal equation&lt;/a&gt;.  This solves directly for the solution without iteration specifying an $\alpha$ value, although it begins to perform worse than gradient descent with large (10,000+) numbers of features.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;$$
+\theta = (X^TX)^{-1}X^Ty
+$$&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from numpy.linalg import inv
+
+def gradient_descent_multi_normal(X, y):
+    return inv(X.T.dot(X)).dot(X.T).dot(y)
+
+theta = gradient_descent_multi_normal(X, y)
+cost = compute_cost(X, y, theta)
+
+print(&#39;theta:&#39;, theta)
+print(&#39;cost:&#39;, cost)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;theta: [ 4.50434884  1.22203893 -0.45083331 -0.34166068]
+cost: 1.00587092471
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The $\theta$ values and costs for each implementation are identical, so we can have a high degree of confidence they are correct.&lt;/p&gt;
+
+&lt;h2 id=&#34;linear-regression-in-tensorflow&#34;&gt;Linear Regression in Tensorflow&lt;/h2&gt;
+
+&lt;p&gt;Tensorflow offers significantly higher-level abstractions to work with, representing the algorithm as a computational graph.  It has a built-in gradient descent optimizer that can minimize the cost function without us having to define the gradient manually.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ll begin by reloading the data and adapting it to more Tensorflow-friendly data structures and terminology.  Features are still normalized as before, but the added column of 1s is absent: the constant is treated separately as a &lt;em&gt;bias&lt;/em&gt; variable, the previous $\theta$ values are now &lt;em&gt;weights&lt;/em&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import tensorflow as tf
+
+X = data.as_matrix(columns=[&#39;atemp&#39;, &#39;hum&#39;, &#39;windspeed&#39;])
+X = feature_normalize(X)
+y = data[&#39;cnt&#39;].values / 1000
+y = y.reshape((-1, 1))
+
+m = X.shape[0]
+n = X.shape[1]
+
+examples = tf.placeholder(tf.float32, [m,n])
+labels = tf.placeholder(tf.float32, [m,1])
+weights = tf.Variable(tf.zeros([n,1], dtype=np.float32), name=&#39;weight&#39;)
+bias = tf.Variable(tf.zeros([1], dtype=np.float32), name=&#39;bias&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The entire gradient descent occurs below in only three lines of code.  All that&amp;rsquo;s needed is to define the hypothesis and cost functions, and then a gradient descent optimizer to find the minimum.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;hypothesis = tf.add(tf.matmul(examples, weights), bias)
+cost = tf.reduce_sum(tf.square(hypothesis - y)) / (2 * m)
+optimizer = tf.train.GradientDescentOptimizer(alpha).minimize(cost)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The graph is now ready to use, and all the remains is to start up a session, run the optimizer iteratively, and check the results.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;with tf.Session() as sess:
+    init = tf.global_variables_initializer()
+    sess.run(init)
+
+    for i in range(1, iterations):
+        sess.run(optimizer, feed_dict={
+            examples: X,
+            labels: y
+        })
+
+    print(&#39;bias:&#39;, sess.run(bias))
+    print(&#39;weights:&#39;, sess.run(weights))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;bias: [ 4.50434685]
+weights: [[ 1.22203839]
+ [-0.45083305]
+ [-0.34166056]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The bias and weight values are identical to the $\theta$ values calculated in both implementations previously, so the Tensorflow implementation of the algorithm looks correct.&lt;/p&gt;
+
+&lt;p&gt;You can find the IPython notebook for this post on &lt;a href=&#34;https://github.com/crsmithdev/notebooks/blob/master/ml-linear-regression/ml-linear-regression.ipynb&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hotel Gracery Shinjuku</title>
       <link>http://crsmithdev.com/blog/hotel-gracery-shinjuku/</link>
-      <pubDate>Tue, 07 Jun 2016 19:00:47 +0700</pubDate>
+      <pubDate>Tue, 07 Jun 2016 21:00:11 +0700</pubDate>
       
       <guid>http://crsmithdev.com/blog/hotel-gracery-shinjuku/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/hotel-gracery.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;The Hotel Gracery is located in &lt;a href=&#34;https://en.wikipedia.org/wiki/Kabukich%C5%8D,_Tokyo&#34;&gt;Kabukichō, Tokyo&lt;/a&gt;, just northeast of Shinjuku station.  It looks something like an Alienware &lt;a href=&#34;http://www.alienware.com/landings/desktops.aspx&#34;&gt;tower&lt;/a&gt;, especially when viewed from the street as pictured above.  Notably, the cinema attached to the hotel features a &lt;a href=&#34;http://en.rocketnews24.com/2014/12/11/full-size-godzilla-head-to-terrorize-moviegoers-and-hotel-guests-in-tokyo-starting-next-spring/&#34;&gt;full-size Godzilla head&lt;/a&gt; which can be seen peeking over the rooftop.&lt;/p&gt;
+&lt;p&gt;The Hotel Gracery is located in &lt;a href=&#34;https://en.wikipedia.org/wiki/Kabukich%C5%8D,_Tokyo&#34;&gt;Kabukichō, Tokyo&lt;/a&gt;, just northeast of Shinjuku station. It looks something like an Alienware &lt;a href=&#34;http://www.alienware.com/landings/desktops.aspx&#34;&gt;tower&lt;/a&gt;, especially when viewed from the street as pictured above. Notably, the cinema attached to the hotel features a &lt;a href=&#34;http://en.rocketnews24.com/2014/12/11/full-size-godzilla-head-to-terrorize-moviegoers-and-hotel-guests-in-tokyo-starting-next-spring/&#34;&gt;full-size Godzilla head&lt;/a&gt; which can be seen peeking over the rooftop.&lt;/p&gt;
 
-&lt;p&gt;The hotel charges extra for &amp;lsquo;Godzilla-view&amp;rsquo; rooms.&lt;/p&gt;
-</description>
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;The hotel charges extra for ‘Godzilla-view’ rooms.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -33,6 +330,8 @@
 
 &lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Yushima_Tenman-g%C5%AB&#34;&gt;Yushima Tenman-gū&lt;/a&gt; is a small Shinto shrine in northern Tokyo I found after getting off at the wrong train station on the way to &lt;a href=&#34;https://en.wikipedia.org/wiki/Ueno_Park&#34;&gt;Ueno Park&lt;/a&gt;.  The building pictured above is actually not the main shrine itself, but one of the other buildings in the complex.&lt;/p&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;From &lt;a href=&#34;https://en.wikipedia.org/wiki/Yushima_Tenman-g%C5%AB&#34;&gt;Wikipedia&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -41,8 +340,7 @@
 
 &lt;p&gt;I also ran into this content-looking little guy at the shrine:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/yushima-bull.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;&lt;img src=&#34;http://crsmithdev.com/images/yushima-bull.jpg&#34; alt=&#34;alt&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -55,12 +353,13 @@
 
 &lt;p&gt;One of my favorite buildings in Tokyo is the &lt;a href=&#34;https://en.wikipedia.org/wiki/Mode_Gakuen_Cocoon_Tower&#34;&gt;Mode Gakuen Cocoon Tower&lt;/a&gt;.  Located in Shinjuku, it&amp;rsquo;s one of the most striking buildings on the skyline.  The above is shot from an unusual angle, looking up from an opening in the pedestrian tunnel that leads west from the station.&lt;/p&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;From &lt;a href=&#34;https://en.wikipedia.org/wiki/Mode_Gakuen_Cocoon_Tower&#34;&gt;Wikipedia&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Before selecting a design for its new Tokyo location, Mode Gakuen held a competition asking architects to submit design proposals for the building. The only condition was that the building could not be rectangular. Mode Gakuen received more than 150 proposals by approximately 50 architects. The winning proposal was a cocoon-like structure designed by Tange Associates. According to Tange Associates the building&amp;rsquo;s cocoon shape symbolizes a building that nurtures the students inside. White aluminum and dark blue glass exterior form the structure&amp;rsquo;s curved shell, which is criss-crossed by a web of white diagonal lines earning it the name &amp;ldquo;Cocoon Tower&amp;rdquo;. A Tange Associates spokesperson stated that their aim was to use the building to revitalize the surrounding area and to create a gateway between Shinjuku Station and the Shinjuku central business district. The building&amp;rsquo;s design earned the firm the Emporis.com 2008 Skyscraper of the year award.&lt;/p&gt;
-&lt;/blockquote&gt;
-</description>
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
@@ -71,57 +370,23 @@
       <guid>http://crsmithdev.com/blog/book-review-cumulus/</guid>
       <description>
 
-
-
-
-    
-    
-        
-        
-        
-        
-    
-
-    
-    
-    
-
-    
-    
-
-
-
-
-    
-
-
-    
-
-    
-        &lt;p&gt;&lt;span class=&#34;image center-image&#34;&gt;
-            &lt;img src=&#34;http://crsmithdev.com/images/cumulus-cover.jpg&#34; alt=&#34;Cumulus cover&#34; /&gt;
-        &lt;/span&gt;&lt;/p&gt;
-    
-
-
-
 &lt;p&gt;&lt;a href=&#34;https://www.amazon.com/Cumulus-Eliot-Peper-ebook/dp/B01E4L5L6S&#34;&gt;Cumulus&lt;/a&gt; is a new novel from Eliot Peper, set in an near-future Bay Area remade by severe economic inequality, ubiquitous surveillance and consolidation of corporate power.  While it works better as a commentary than as a novel, the dystopia it presents is a plausible evolution of current economic and social trends and worth a read by fans of the genre, or anyone interested in where another decade or so might take us.&lt;/p&gt;
 
 &lt;p&gt;The namesake of the book, the Cumulus corporation, is a vast AI-powered information aggregator that has embedded itself into every aspect of digital life.  Cumulus has absorbed many other companies to add to its growing collective, including concepts, if not names, that will be familiar: Fleet, a driverless future Uber, internet provider Bandwidth, cloud storage service Backend, and mercenary service Security amongst others.  Cumulus sucks in staggering amounts of real-time data from every device, service, media platform and subsidiary, weaving a complex, intricate and invasive intelligence portrait of anyone connected.  Think &lt;a href=&#34;http://qz.com/697923/heres-how-to-stop-facebook-from-listening-to-you-on-your-phone/&#34;&gt;Facebook listening to you on your phone microphone&lt;/a&gt; and take it to its most disturbing possible conclusion.&lt;/p&gt;
 
-&lt;p&gt;Concentration of power and computing into a corporate surveillance machine has helped crystallize economic stratification into two distinct classes:  much of San Francisco and affluent enclaves of the East Bay have become Green Zones, where knowledge workers live and work in comfort and luxury, and anyone without the proper pass is liable to be ejected violently by Security.  The rest of the population lives outside in the Slums, the crumbling remains of everywhere else, where they scrape by on gig jobs or whatever else they can find.  The flow of tax money has been reduced to a trickle, leaving governments and even basic public services institutions barely functional if not completely absent.&lt;/p&gt;
+&lt;p&gt;Concentration of power and computing into a corporate surveillance state has helped crystallize  economic stratification into two distinct classes:  much of San Francisco and various affluent enclaves of the East Bay have become Green Zones, where knowledge workers live and work in comfort and luxury, and anyone without the proper pass is liable to be ejected violently by Security.  The rest of the population lives outside in the Slums, the crumbling remains of everywhere else, where they scrape by on gig jobs or whatever else they can find.  The flow of tax money has been reduced to a trickle, leaving governments and even basic public services institutions barely functional if not completely absent.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-story:c424dd55313168470a777a5bbd45d921&#34;&gt;The Story&lt;/h2&gt;
+&lt;h1 id=&#34;the-story&#34;&gt;The Story&lt;/h1&gt;
 
 &lt;p&gt;Peper injects three main characters into this world:  Huian, the driven CEO of Cumulus, steering the ever-increasing growth and reach of her company even as her marriage dissolves; Graham, an ex-CIA field agent who tired of government service and came to San Francisco to run his own kind of intelligence operations; and Lilly, an anachronistic film photographer, scraping by as a freelancer doing jobs for Greenies while living in the Oakland slums, dreaming and saving for a day where she can afford a trip out of the country.  A failed acquisition attempt and a threatening lawsuit lead Huian to give Graham the go-ahead to &amp;lsquo;fix&amp;rsquo; them, just as a bad review from a job pushes Lilly to risk a trespass into the Green Zone to find a good vantage point to take some photos and clear her head.&lt;/p&gt;
 
-&lt;p&gt;As a novel, &lt;em&gt;Cumulus&lt;/em&gt; hooked me with its premise but left me wanting more at the end.  It&amp;rsquo;s a very short read, just over two hundred printed pages which makes it brief enough to finish in an afternoon.  This felt like a missed opportunity, as there are so many aspects of the world that beg for more detail.  Character development is also uneven:  Lilly has a solid backstory and is a sound protagonist, but Huian and Graham felt more two-dimensional.  Huian works as a cold, calculating mind behind a classic dystopian mega-corporation, but the lack of depth made some of her evolution later in the book feel forced, either betraying an incongruous amount of naivete on her part, or a rushed and convenient turn so as to wrap the novel.&lt;/p&gt;
+&lt;p&gt;As a novel, &lt;em&gt;Cumulus&lt;/em&gt; hooked me with its premise but left me wanting more at the end.  It&amp;rsquo;s a very short read, just over two hundred printed pages which makes it brief enough to finish in an  afternoon.  This felt like a missed opportunity, as there are so many aspects of the world that beg for some more exposition or history.  Character development is also uneven:  Lilly has a solid backstory and is a sound protagonist, but Huian and Graham felt more two-dimensional.  Huian works as a cold, calculating mind behind a classic dystopian mega-corporation, but the lack of depth made some of her evolution later in the book feel forced, either betraying an incongruous amount of naivete on her part, or a rushed and convenient turn so as to wrap the novel.&lt;/p&gt;
 
-&lt;p&gt;Graham is sickly fascinating, the product of a multi-generational family of intelligence operatives who is representative of the worst we&amp;rsquo;ve come to expect from that world.  Unfortunately, his motivations are unclear even through the end, and he seemed to be more of an archetype than a fleshed-out person.  Jarringly, at some points it feels that the characters, Graham in particular, cross over into being mouthpieces for Peper&amp;rsquo;s commentary on his own world.  These insights are appropriate, but feel forced into the characters rather than the product of their own development and discoveries.&lt;/p&gt;
+&lt;p&gt;Graham is sickly fascinating, the product of a multi-generational family of intelligence operatives who is representative of the worst we&amp;rsquo;ve come to expect from that world.  Unfortunately, his motivations are difficult to discern, even through the end, and he seemed to be more of an archetype than a fleshed-out person.  Jarringly, at some points it feels that the characters, Graham in particular, cross over into being mouthpieces for Peper&amp;rsquo;s commentary on his own world.  These insights are appropriate, but feel forced into the characters rather than the product of their own development and discoveries.&lt;/p&gt;
 
 &lt;p&gt;Technically speaking, little in &lt;em&gt;Cumulus&lt;/em&gt; seems far-fetched, which makes the suspension of disbelief a minor one.  Every aspect of the technology &amp;ndash; the connectivity, AI, integration of untold streams of data &amp;ndash; seem just slightly out of reach today, attainable with just slightly better models, a little more bandwidth or a few years more time to develop them.  It&amp;rsquo;s the slick, instant and hyper-perfected version of what the intelligence community has been building silently for over a decade, wielded for better and worse by a corporation instead of spooks.  And while I found the technique Graham used to evade being caught by his own network ripe for obvious discovery, it also struck me as the type of hubristic oversight a near-omniscient corporate overlord could make.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-future:c424dd55313168470a777a5bbd45d921&#34;&gt;The Future&lt;/h2&gt;
+&lt;h1 id=&#34;the-future&#34;&gt;The Future&lt;/h1&gt;
 
 &lt;p&gt;Like the best of dystopias, the world of &lt;em&gt;Cumulus&lt;/em&gt; isn&amp;rsquo;t too difficult to imagine growing out of our own.  Technology aside, Green Zones and Slums sometimes feel only a few short years away without a meaningful course correction that has yet to appear.  Today, no one will toss you out of San Francisco for lack of a permit, but most anyone not involved in tech or already well-off would be unable to move in and live there today.  BART isn&amp;rsquo;t the complete disaster it becomes in &lt;em&gt;Cumulus&lt;/em&gt;, but it has clearly suffered like others across the country under our pathological lack of interest in &lt;a href=&#34;http://www.sfchronicle.com/bayarea/article/BART-gets-candid-in-Twitter-exchange-with-angry-6900683.php&#34;&gt;developing or maintaining&lt;/a&gt; public transit.  And general dissatisfaction with the police amidst rising property crime, combined with &lt;a href=&#34;http://www.sfgate.com/politics/article/SF-Mayor-Lee-points-at-judges-in-property-crime-7948231.php&#34;&gt;ineffective leadership from the local government&lt;/a&gt; seem to be ideal precursors to the wider rollout of private security forces in areas that can afford them.&lt;/p&gt;
 
@@ -131,41 +396,7 @@
 
 &lt;p&gt;That&amp;rsquo;s the most disturbing part of all &amp;ndash; not that our future highways will be swarms of self-driving Fleets, that AI could stitch together aspects of our digital lives in ways both amazing and terrifying, or that private enterprise would replace the rotting appendages of an ever-less effective government &amp;ndash; but that it will be done in a way totally devoid of compassion or appreciation of human consequences.  It&amp;rsquo;s not one big optimization that suddenly cuts off a chunk of the population, but a million small ones, often made by smart, driven, well-intentioned disruptors that are genuinely working for a brighter and better future.  It&amp;rsquo;s too easy to not see, or pass off as another&amp;rsquo;s problem, the more difficult and uncomfortable effects of them.  As a species, we seem to have significant difficulty even perceiving, much less managing the karmically complex changes we&amp;rsquo;re increasingly capable of producing.&lt;/p&gt;
 
-&lt;p&gt;For me, the most difficult and rewarding part of reading &lt;em&gt;Cumulus&lt;/em&gt; was looking for myself in the mirror it holds up:  after all, I&amp;rsquo;d be somewhere in the San Francisco Green Zone, hacking away at those schools of Fleets as they swarm about the ancient, crumbling highways built in an America of a different age.  It&amp;rsquo;s not that the vision of highways full of self-driving vehicles is wrong &amp;ndash; on the contrary, ending the era of individual automobile ownership would be a powerful legacy for my generation.  We just need to be wary of the optimizations of our own lives, careers and successes that align all too easily with those that scrub out whole classes of people from our economic and social calculus, leaving them to fend for themselves in the slums, the plebelands, or whatever else we might call them someday.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>projects</title>
-      <link>http://crsmithdev.com/projects/</link>
-      <pubDate>Tue, 31 May 2016 12:10:20 +0700</pubDate>
-      
-      <guid>http://crsmithdev.com/projects/</guid>
-      <description>
-
-&lt;h3 id=&#34;arrow:3c42bb4157bf51d85ae7ffc4e1685909&#34;&gt;Arrow&lt;/h3&gt;
-
-&lt;p&gt;Arrow is a simple, lightweight Python library, inspired by &lt;a href=&#34;https://github.com/timrwood/moment&#34;&gt;moment.js&lt;/a&gt; and &lt;a href=&#34;https://github.com/kennethreitz/requests&#34;&gt;requests&lt;/a&gt;, that provides a sensible, intelligent way of creating, manipulating, formatting and converting dates, times and timestamps.  Arrow is a drop-in replacement for Python date objects.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/crsmithdev/arrow&#34;&gt;github.com/crsmithdev/arrow&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;crsmithdev-com:3c42bb4157bf51d85ae7ffc4e1685909&#34;&gt;crsmithdev.com&lt;/h3&gt;
-
-&lt;p&gt;crsmithdev.com us built using &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;, a static site generator written in Go.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/crsmithdev/crsmithdev.com&#34;&gt;github.com/crsmithdev/crsmithdev.com&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;pew:3c42bb4157bf51d85ae7ffc4e1685909&#34;&gt;Pew&lt;/h3&gt;
-
-&lt;p&gt;PEW (a Python EVE Wrapper) is a basic Python client for the EVE online XML API.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/crsmithdev/pew&#34;&gt;github.com/crsmithdev/pew&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;data-structure-visualizer:3c42bb4157bf51d85ae7ffc4e1685909&#34;&gt;Data Structure Visualizer&lt;/h3&gt;
-
-&lt;p&gt;The Data Structure Visualizer is an academic project, built with C# / WPF, built to assist in teaching programming students about the abstractions and behaviors involved in common data structures and sorting algorithms.&lt;/p&gt;
-
-&lt;p&gt;Contact me for more information about this project.&lt;/p&gt;
+&lt;p&gt;For me, the most difficult and rewarding part of reading &lt;em&gt;Cumulus&lt;/em&gt; was looking for myself in the mirror it holds up:  after all, I&amp;rsquo;d be somewhere in the San Francisco Green Zone, hacking away at those schools of Fleets as they swarm about the ancient, crumbling highways built in an America of a different age.  It&amp;rsquo;s not that the vision of highways full of self-driving vehicles is wrong: on the contrary, ending the era of individual automobiles would be a powerful legacy for my generation.  We just need to be wary of the optimizations of our own lives, careers and successes that align all too easily with those that scrub out whole classes of people from our economic and social calculus, leaving them to fend for themselves in the slums, the plebelands, or whatever else we might call them someday.&lt;/p&gt;
 </description>
     </item>
     
@@ -175,7 +406,27 @@
       <pubDate>Tue, 31 May 2016 12:01:44 +0700</pubDate>
       
       <guid>http://crsmithdev.com/about/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Working on an updated bio, TBA&lt;/strong&gt;&lt;/p&gt;
+      <description>&lt;p&gt;Hi, I&amp;rsquo;m Chris Smith. I live in San Francisco, California and do software, startup and mindfulness things.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m an engineering manager at &lt;a href=&#34;https://www.uber.com/&#34;&gt;Uber&lt;/a&gt;, having joined the company as an engineer in 2014.  In my time at Uber, I&amp;rsquo;ve worked in the data engineering and developer experience organizations, where I&amp;rsquo;ve built real-time data infrastructure, microservices, developer frameworks and data visualization tools, contributing individually and leading teams at the technical and managerial levels.  Prior to Uber, I was a full-stack and operations engineer at &lt;a href=&#34;http://circa.com/&#34;&gt;Circa&lt;/a&gt;, and lead software developer at &lt;a href=&#34;https://www.gremlinsocial.com/&#34;&gt;Gremlin Social&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;My educational background in computer science consists of a B.S. (2010) and M.S. (2011) with an emphasis in distributed systems from &lt;a href=&#34;http://www.webster.edu/&#34;&gt;Webster University&lt;/a&gt;.  I also hold a B.A in psychology, completed in 2003.  Before college, I attended &lt;a href=&#34;https://www.priory.org/&#34;&gt;St. Louis Priory School&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Areas of my expertise and interest in the industry include:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Distributed systems and databases&lt;/li&gt;
+&lt;li&gt;Data engineering, infrastructure and real-time analytics&lt;/li&gt;
+&lt;li&gt;Architecture, frameworks and scalable engineering practices&lt;/li&gt;
+&lt;li&gt;Mentorship, management, personal and organizational growth&lt;/li&gt;
+&lt;li&gt;Machine learning and natural language processing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I also develop and maintain several &lt;a href=&#34;http://crsmithdev.com/projects&#34;&gt;open-source software projects&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I am a Buddhist and daily practitioner of meditation.  While at Uber, I founded and grew a cross-company meditation and mindfulness practice group, and research the effects of mindfulness in the workplace.  I have a particular interest in the intersection of mind and technology, and in how we can build software products with healthier iteraction patterns and more positive impacts on society and culture.&lt;/p&gt;
+
+&lt;p&gt;When not working, I can usually be found writing code, reading books, taking classes, meditating, practicing yoga, watching Netflix or playing computer games.  I gravitate towards history, science fiction, psychology and philosophy.  I also enjoy travelling whenever possible, recently taking a 3-month trip to Asia in 2016, visiting Japan, Thailand, Singapore and Malaysia.&lt;/p&gt;
 </description>
     </item>
     
@@ -185,13 +436,11 @@
       <pubDate>Sun, 15 Sep 2013 11:34:46 +0700</pubDate>
       
       <guid>http://crsmithdev.com/blog/running-redis-26-on-docker/</guid>
-      <description>
-
-&lt;h2 id=&#34;running-redis-2-6-on-docker:72e358964074813b42c64aae0688fb84&#34;&gt;Running Redis 2.6 on Docker&lt;/h2&gt;
-
-&lt;h3 id=&#34;docker:72e358964074813b42c64aae0688fb84&#34;&gt;Docker&lt;/h3&gt;
+      <description>&lt;h1 id=&#34;docker&#34;&gt;Docker&lt;/h1&gt;
 
 &lt;p&gt;With the end of my free tier eligibility looming on AWS, I took advantage of the &lt;a href=&#34;http://developer.rackspace.com/devtrial/&#34;&gt;Rackspace developer discount&lt;/a&gt; and set up a new account and personal server this weekend.  One of the technologies I&amp;rsquo;ve been most interested in recently is &lt;a href=&#34;http://www.docker.io&#34;&gt;Docker&lt;/a&gt;, a container engine for Linux which aims to be the intermodal shipping container for applications and their dependencies.  A brand-new box seemed like the perfect time to dig in to it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;To get a sense of what Docker is and how it works, I&amp;rsquo;d recommend going through the &lt;a href=&#34;http://www.docker.io/gettingstarted/&#34;&gt;getting started&lt;/a&gt; tutorial as well as some of the examples in the &lt;a href=&#34;http://docs.docker.io/en/latest/&#34;&gt;documentation&lt;/a&gt;.  However, here&amp;rsquo;s a very brief rundown:&lt;/p&gt;
 
@@ -208,7 +457,7 @@
 
 &lt;p&gt;One of the documentation examples describes setting up a &lt;a href=&#34;http://redis.io&#34;&gt;Redis&lt;/a&gt; service.  Following the example was straightforward, but I felt it was missing two things when I was finished.  First, it uses Redis 2.4, which is already quite out of date (as of this writing, Redis 2.8 is nearing release).  Plus, it felt awkward having to specify a lengthy command and config file each time the container started.&lt;/p&gt;
 
-&lt;h3 id=&#34;installing-redis-2-6:72e358964074813b42c64aae0688fb84&#34;&gt;Installing Redis 2.6&lt;/h3&gt;
+&lt;h1 id=&#34;installing-redis-2-6&#34;&gt;Installing Redis 2.6&lt;/h1&gt;
 
 &lt;p&gt;The first thing to do is start a container from a base image, in this case the &lt;code&gt;ubuntu&lt;/code&gt; image pulled during setup:&lt;/p&gt;
 
@@ -245,7 +494,7 @@ mv redis.conf /etc/redis/redis.conf
 &lt;pre&gt;&lt;code&gt;redis-server /etc/redis/redis.conf
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;run-commands-and-images:72e358964074813b42c64aae0688fb84&#34;&gt;Run commands and images&lt;/h3&gt;
+&lt;h1 id=&#34;run-commands-and-images&#34;&gt;Run commands and images&lt;/h1&gt;
 
 &lt;p&gt;In the example, the resulting container is committed to an image, and then run:&lt;/p&gt;
 
@@ -271,7 +520,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 &lt;pre&gt;&lt;code&gt;sudo docker run -i -t crsmithdev/redis2.6 /bin/bash
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;handling-data:72e358964074813b42c64aae0688fb84&#34;&gt;Handling data&lt;/h3&gt;
+&lt;h1 id=&#34;handling-data&#34;&gt;Handling data&lt;/h1&gt;
 
 &lt;p&gt;One important point:  what about the data and log files that result from the Redis process?  Every time I run Redis from that image, I get a new container with fresh data.  That&amp;rsquo;s ideal for some situations, but less so for for others: in a production environment, it&amp;rsquo;s entirely possible I&amp;rsquo;d want to be able to start a new Redis container, but be able to load a dumpfile from a previous one.&lt;/p&gt;
 
@@ -292,14 +541,13 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 
 &lt;p&gt;If you specify a different logfile location in &lt;code&gt;redis.conf&lt;/code&gt;, it&amp;rsquo;s possible to add a second volume to the &lt;code&gt;run&lt;/code&gt; command.&lt;/p&gt;
 
-&lt;h3 id=&#34;fin:72e358964074813b42c64aae0688fb84&#34;&gt;Fin!&lt;/h3&gt;
+&lt;h1 id=&#34;fin&#34;&gt;Fin!&lt;/h1&gt;
 
 &lt;p&gt;And that&amp;rsquo;s it.  This image can then be downloaded and started, producing a running, fully-functional Redis server in literally a few seconds.&lt;/p&gt;
 
 &lt;p&gt;You can grab my image &lt;a href=&#34;https://index.docker.io/u/crsmithdev/redis2.6/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;UPDATE 9-15 - updated container run arguments, and added a bit about volumes.&lt;/strong&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;&lt;strong&gt;UPDATE 9-15 - updated container run arguments, and added a bit about volumes.&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -308,15 +556,9 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
       <pubDate>Sun, 02 Jun 2013 11:34:28 +0700</pubDate>
       
       <guid>http://crsmithdev.com/blog/a-blog-refresh-with-bootstrap-and-static/</guid>
-      <description>
+      <description>&lt;p&gt;Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year.  My needs were simple:  it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in &lt;strong&gt;no&lt;/strong&gt; way to be the technology or process of creating and maintaining it.  Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for &lt;em&gt;writing&lt;/em&gt;, not to go on a technical adventure in creating one.  Although I&amp;rsquo;ve only written two posts on it so far, the effort was successful: in short order, I&amp;rsquo;d set up &lt;a href=&#34;http://octopress.org&#34;&gt;Octopress&lt;/a&gt; and had it deploying to Pages.&lt;/p&gt;
 
-&lt;h2 id=&#34;a-blog-refresh-with-bootstrap-3-and-static:fe236af735f282018ecf873fea2074ac&#34;&gt;A Blog Refresh with Bootstrap 3 and Static&lt;/h2&gt;
-
-&lt;h3 id=&#34;previously:fe236af735f282018ecf873fea2074ac&#34;&gt;Previously&lt;/h3&gt;
-
-&lt;p&gt;Earlier this year, I finally set up a blog on my domain, having owned but left it unused for over a year.  My needs were simple:  it was to be a completely static site, hostable on GitHub Pages or Dropbox, and the focus of the project was in &lt;strong&gt;no&lt;/strong&gt; way to be the technology or process of creating and maintaining it.  Despite the part of me that automatically geeked out at the opportunity to build my own completely custom blog generator from scratch, the point of doing it was to provide myself with a straightforward platform for &lt;em&gt;writing&lt;/em&gt;, not to go on a technical adventure in creating one.  Although I&amp;rsquo;ve only written two posts on it so far, the effort was successful: in short order, I&amp;rsquo;d set up &lt;a href=&#34;http://octopress.org&#34;&gt;Octopress&lt;/a&gt; and had it deploying to Pages.  The result looked like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&#34;img-responsive img-thumbnail blog-image&#34; src=&#34;http://crsmithdev.com/img/crsmithdev_com_old.jpg&#34;/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;I found it usable but lacking in a few key ways, the most significant of which was that I was simply underwhelmed with the themes available for Octopress, and had little interest in building a new theme or heavily modifying an existing one.  Moreover, it felt very much like a monolithic framework, into a tiny corner of which were tucked the contents of my blog.  I realized that what I wanted was a simple engine that would handle the work of converting Markdown to HTML and stitching the results together with templates, but would otherwise stay out of the way as much as possible, impose little structure and even less of its own code on me, and give me total control over the design without relying on theming.&lt;/p&gt;
 
@@ -331,7 +573,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 
 &lt;p&gt;Lastly, as Clojure is quickly eclipsing all others as my hacking language of choice, I was heavily biased towards finding a solution that was written in and used it.&lt;/p&gt;
 
-&lt;h3 id=&#34;components:fe236af735f282018ecf873fea2074ac&#34;&gt;Components&lt;/h3&gt;
+&lt;h1 id=&#34;components&#34;&gt;Components&lt;/h1&gt;
 
 &lt;p&gt;In the end, I selected the following:&lt;/p&gt;
 
@@ -343,7 +585,7 @@ sudo docker run -d -p 6379 crsmithdev/redis2.6 /usr/bin/redis-server /etc/redis/
 &lt;li&gt;&lt;a href=&#34;https://code.google.com/p/google-code-prettify/&#34;&gt;google-code-prettify&lt;/a&gt; - code syntax highlighting.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;static:fe236af735f282018ecf873fea2074ac&#34;&gt;Static&lt;/h3&gt;
+&lt;h1 id=&#34;static&#34;&gt;Static&lt;/h1&gt;
 
 &lt;p&gt;Static is a very simple static site generator, with full documentation that spans about &lt;a href=&#34;http:/nakkaya.com/static.html&#34;&gt;two pages&lt;/a&gt;.  What&amp;rsquo;s most refreshing about Static (compared to Octropress, at least) is that it&amp;rsquo;s built as a separate project, and then the .jar is copied into the repo for the site that will use it.  This means that the only traces of it that end up in the blog project are the .jar itself, and a few, flexible conventions regarding directory structure.&lt;/p&gt;
 
@@ -426,7 +668,7 @@ cp ../static/target/static-app.jar .
  :atomic-build true]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;html-templating-with-hiccup:fe236af735f282018ecf873fea2074ac&#34;&gt;HTML templating with Hiccup&lt;/h3&gt;
+&lt;h1 id=&#34;html-templating-with-hiccup&#34;&gt;HTML templating with Hiccup&lt;/h1&gt;
 
 &lt;p&gt;Static uses &lt;a href=&#34;https://github.com/weavejester/hiccup&#34;&gt;Hiccup&lt;/a&gt;, a great templating library for Clojure, to specify the structure of pages it generates.  Having never used it before, I instantly found it to be very natural and efficient &amp;mdash; the syntax is extremely minimal, vectors and maps are used for elements and their attributes, respectively, and it&amp;rsquo;s possible to embed Clojure code right along with element definitions.&lt;/p&gt;
 
@@ -488,7 +730,7 @@ cp ../static/target/static-app.jar .
      (take 5 (reverse (static.io/list-files :posts))))]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;bootstrap-3-font-awesome-and-theming:fe236af735f282018ecf873fea2074ac&#34;&gt;Bootstrap 3, Font Awesome, and theming&lt;/h3&gt;
+&lt;h1 id=&#34;bootstrap-3-font-awesome-and-theming&#34;&gt;Bootstrap 3, Font Awesome, and theming&lt;/h1&gt;
 
 &lt;p&gt;Fortunately, Bootstrap 3 was nearing release as I was beginning to work on the site, so I grabbed the RC2 version and went to work.  &lt;a href=&#34;http://bootswatch.com/&#34;&gt;Bootswatch&lt;/a&gt; provides a nice selection of attractive, free themes for Bootstrap 3, of which I picked &lt;a href=&#34;http://bootswatch.com/flatly/&#34;&gt;Flatly&lt;/a&gt;. &lt;a href=&#34;http://fortawesome.github.io/Font-Awesome/&#34;&gt;Font Awesome&lt;/a&gt; has high-quality icons for Twitter, GitHub and LinkedIn (amongst many, many others), making it an easy choice here.&lt;/p&gt;
 
@@ -503,7 +745,7 @@ cp ../static/target/static-app.jar .
 
 &lt;p&gt;The fonts can be found at &lt;a href=&#34;http://www.google.com/fonts&#34;&gt;Google Fonts&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;github-activity:fe236af735f282018ecf873fea2074ac&#34;&gt;Github Activity&lt;/h3&gt;
+&lt;h1 id=&#34;github-activity&#34;&gt;Github Activity&lt;/h1&gt;
 
 &lt;p&gt;While there are some JS libraries to access the GitHub API, my needs were so simple that I was unwilling to introduce additional dependencies to just to parse a little bit of JSON and generate a few DOM elements.  For the same reason, while I ordinarily would be using libraries like &lt;a href=&#34;http://underscorejs.org&#34;&gt;underscore.js&lt;/a&gt; and &lt;a href=&#34;http://momentjs.org&#34;&gt;moment.js&lt;/a&gt; for dates, templating or even iteration, here I opted for vanilla JS.&lt;/p&gt;
 
@@ -576,7 +818,7 @@ var toDateString = function(date) {
 });
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;syntax-highlighting:fe236af735f282018ecf873fea2074ac&#34;&gt;Syntax Highlighting&lt;/h3&gt;
+&lt;h1 id=&#34;syntax-highlighting&#34;&gt;Syntax Highlighting&lt;/h1&gt;
 
 &lt;p&gt;Originally I attempted to use &lt;a href=&#34;http://softwaremaniacs.org/soft/highlight/en/&#34;&gt;highlight.js&lt;/a&gt;, but quickly ran into issues:  nearly all of the guesses it made about what kind of syntax was being presented were wrong, and it was difficult to override its default guessing behavior, especially given that I was writing the posts in Markdown, not raw HTML.  Fortunately, &lt;a href=&#34;https://code.google.com/p/google-code-prettify/&#34;&gt;google-code-prettify&lt;/a&gt; was a much more usable option, even though it does require an &lt;a href=&#34;https://code.google.com/p/google-code-prettify/source/browse/trunk/src/lang-clj.js&#34;&gt;extension&lt;/a&gt; to handle Clojure.&lt;/p&gt;
 
@@ -606,11 +848,11 @@ var toDateString = function(date) {
       ; ...
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;deployment:fe236af735f282018ecf873fea2074ac&#34;&gt;Deployment&lt;/h3&gt;
+&lt;h1 id=&#34;deployment&#34;&gt;Deployment&lt;/h1&gt;
 
 &lt;p&gt;Deployment to GitHub Pages was very straightforward.  I nuked my existing &lt;a href=&#34;https://github.com/crsmithdev/crsmithdev.github.com&#34;&gt;crsmithdev.github.com&lt;/a&gt; master and copied over all the files from the &lt;code&gt;html&lt;/code&gt; directory, being sure to add a CNAME file referencing my &lt;a href=&#34;http://crsmithdev.com&#34;&gt;crsmithdev.com&lt;/a&gt; domain so Pages would work currently under it.  One push and the site was up and running.&lt;/p&gt;
 
-&lt;h3 id=&#34;future-work:fe236af735f282018ecf873fea2074ac&#34;&gt;Future work&lt;/h3&gt;
+&lt;h1 id=&#34;future-work&#34;&gt;Future work&lt;/h1&gt;
 
 &lt;p&gt;I&amp;rsquo;m much happier with the site now, but still see some areas for improvement:&lt;/p&gt;
 
@@ -620,8 +862,7 @@ var toDateString = function(date) {
 &lt;li&gt;Simply put, I need to write more.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Of course, the last of these is the most difficult for me, which is often a sign that it&amp;rsquo;s the most important.&lt;/p&gt;
-</description>
+&lt;p&gt;Of course, the last of these is the most difficult for me, which is often a sign that it&amp;rsquo;s the most important.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -630,21 +871,19 @@ var toDateString = function(date) {
       <pubDate>Tue, 26 Mar 2013 11:31:53 +0700</pubDate>
       
       <guid>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</guid>
-      <description>
-
-&lt;h2 id=&#34;building-better-email-habits-with-mailbox:3973863d6a215daa77edc0d6751f8485&#34;&gt;Building Better Email Habits with Mailbox&lt;/h2&gt;
-
-&lt;h3 id=&#34;introduction:3973863d6a215daa77edc0d6751f8485&#34;&gt;Introduction&lt;/h3&gt;
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;As my first-ever blog post, I&amp;rsquo;m presenting my recent experience with the recent email app, &lt;a href=&#34;http://mailboxapp.com&#34;&gt;Mailbox&lt;/a&gt;.  This is less about the app itself, however (or it recently being snapped up by Dropbox for $100 million), but more about how I used it to help me examine and improve my behavior when it comes to handling and communicating via email.&lt;/p&gt;
 
-&lt;h3 id=&#34;mailbox:3973863d6a215daa77edc0d6751f8485&#34;&gt;Mailbox&lt;/h3&gt;
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;mailbox&#34;&gt;Mailbox&lt;/h1&gt;
 
 &lt;p&gt;Briefly, Mailbox is an iPhone app that integrates aggressively with one or more of your email accounts (GMail only, for now), and through a gesture-focused UI presents four actions to be taken on any one email:  archive it, delete it, reschedule it for later, or send it to a list.  Of the four, rescheduling is the most interesting, as it yanks the email from your inbox at that moment and then returns it after a selectable interval.  The gestures and UI are slick, performance is good, and despite the significant wait to actually be able to USE the app (roughly 3 weeks in the queue), it has managed to become the default email application on my phone already.  5 stars from me.&lt;/p&gt;
 
 &lt;p&gt;But this is not an app review, it&amp;rsquo;s a behavioral one.  What&amp;rsquo;s immediately clear about the Mailbox experience is that it is entirely geared toward reaching and maintaining &amp;ldquo;inbox zero&amp;rdquo;.  The app badge indicates the total number of emails in your inbox, &lt;strong&gt;not&lt;/strong&gt; the number of unread ones.  By default, push notifications are enabled for &lt;strong&gt;all&lt;/strong&gt; emails (though this is configurable).  Clearing your way to zero rewards you with a peek at a nice, relaxing image, and the option to share the first time you accomplish it.  Clearly, a strongly opinionated design.&lt;/p&gt;
 
-&lt;h3 id=&#34;diving-in:3973863d6a215daa77edc0d6751f8485&#34;&gt;Diving in&lt;/h3&gt;
+&lt;h1 id=&#34;diving-in&#34;&gt;Diving in&lt;/h1&gt;
 
 &lt;p&gt;What hit me immediately upon using the app for the first time, however, looked more like this:  across two accounts, an app badge of 900+ and a steady snowfall of push notifications about incoming emails.  Obviously a broken state of affairs even in the absence of an opinionated email app, but also one that is effectively incompatible with Mailbox.  A reflexive response from me might be to defer trying out the app until I got around to cleaning up my inbox&amp;hellip;and then to defer cleaning my inbox until some undefined date and time that&amp;rsquo;s easy to forget and conveniently lets me continue doing things just as I have been.&lt;/p&gt;
 
@@ -652,7 +891,7 @@ var toDateString = function(date) {
 
 &lt;p&gt;Most importantly, I resolved to cast a critical eye on the process, and keep some notes so I could write about it.&lt;/p&gt;
 
-&lt;h3 id=&#34;behavior:3973863d6a215daa77edc0d6751f8485&#34;&gt;Behavior&lt;/h3&gt;
+&lt;h1 id=&#34;behavior&#34;&gt;Behavior&lt;/h1&gt;
 
 &lt;p&gt;It took little introspection to quickly identify my typical pattern of managing email.  As with many things, it was clearly a sub-optimal pattern that I had grown well-accustomed to through years of extensive practice.  What follows is the cycle I would repeat every several months:&lt;/p&gt;
 
@@ -676,7 +915,7 @@ var toDateString = function(date) {
 &lt;li&gt;&lt;strong&gt;It becomes a low-grade stressor&lt;/strong&gt;:  Email is now a pile of unfinished tasks and questionably-relevant bits of information.  It is just another minor aspect of life that I feel I&amp;rsquo;ve lost control of.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;getting-things-done:3973863d6a215daa77edc0d6751f8485&#34;&gt;Getting Things Done&lt;/h3&gt;
+&lt;h1 id=&#34;getting-things-done&#34;&gt;Getting Things Done&lt;/h1&gt;
 
 &lt;p&gt;What really jumped out at me immediately upon using Mailbox was that it very closely parallels principles in David Allen&amp;rsquo;s &lt;a href=&#34;http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/B0012OMFHY/ref=zg_bs_2569_3&#34;&gt;Getting Things Done: The Art of Stress-Free Productivity&lt;/a&gt;.  Mailbox&amp;rsquo;s actions match Allen&amp;rsquo;s &amp;ldquo;do it, delegate it, defer it, drop it&amp;rdquo;, with a clear mapping:  do it &amp;rarr; archive, delegate it &amp;rarr; list, defer it &amp;rarr; reschedule, and drop it &amp;rarr; delete.  A quick search revealed a few others mentioning this as possible, partial inspiration for the approach the app takes.&lt;/p&gt;
 
@@ -684,7 +923,7 @@ var toDateString = function(date) {
 
 &lt;p&gt;The organizational system proposed in Getting Things Done now definitely appears to be a product of it&amp;rsquo;s time (originally published in 2002), and makes heavier use of paper and files.  However, Mailbox neatly uses gestures to map this process onto the fully paperless system of email, replacing filing into physical folders with flicks of the thumb.&lt;/p&gt;
 
-&lt;h3 id=&#34;using-mailbox:3973863d6a215daa77edc0d6751f8485&#34;&gt;Using Mailbox&lt;/h3&gt;
+&lt;h1 id=&#34;using-mailbox&#34;&gt;Using Mailbox&lt;/h1&gt;
 
 &lt;p&gt;Getting started with Mailbox is easy: once you can use the app, clean out your inbox and start using it at zero.  The trick of it, of course, is maintaining zero.  Here are some of the things I learned in the process:&lt;/p&gt;
 
@@ -697,7 +936,7 @@ var toDateString = function(date) {
 &lt;li&gt;&lt;strong&gt;Reschedule&lt;/strong&gt;:  This is actually a really good way to defer things meaningfully, especially if notifications are enabled for rescheduled messages.  The interruption of a quick reminder should encourage judicious use.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;progress:3973863d6a215daa77edc0d6751f8485&#34;&gt;Progress&lt;/h3&gt;
+&lt;h1 id=&#34;progress&#34;&gt;Progress&lt;/h1&gt;
 
 &lt;p&gt;After three weeks, I&amp;rsquo;ve maintained a steady state of inbox zero, and have significantly reduced my incoming email volume.  What&amp;rsquo;s surprised me the most is that by using the app as a tool for behavioral change and reinforcement, I&amp;rsquo;ve managed to trade a healthy dose of dysfunction and disorganization for a very small moment of extra effort throughout the day.  It feels like a bit of gamification without the annoyance and artificiality of rewards:  the reward is a stack of minor accomplishments, and seeing that repeated over time.&lt;/p&gt;
 
@@ -711,7 +950,68 @@ var toDateString = function(date) {
 &lt;li&gt;&amp;hellip;and perhaps most importantly, if there aren&amp;rsquo;t&amp;hellip;does that present an opportunity for me to build something?&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Thanks for reading.&lt;/p&gt;
+&lt;p&gt;Thanks for reading.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>http://crsmithdev.com/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://crsmithdev.com/projects/</guid>
+      <description>
+
+&lt;h1 id=&#34;arrow-https-github-com-crsmithdev-arrow&#34;&gt;&lt;a href=&#34;https://github.com/crsmithdev/arrow&#34;&gt;Arrow&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;Arrow is a simple, lightweight Python library, inspired by &lt;a href=&#34;https://github.com/timrwood/moment&#34;&gt;moment.js&lt;/a&gt; and &lt;a href=&#34;https://github.com/kennethreitz/requests&#34;&gt;requests&lt;/a&gt;, that provides a sensible, intelligent way of creating, manipulating, formatting and converting dates, times and timestamps.  Arrow is a drop-in replacement for Python date objects.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Fully implemented, drop-in replacement for datetime&lt;/li&gt;
+&lt;li&gt;Supports Python 2.6, 2.7, 3.3, 3.4 and 3.5&lt;/li&gt;
+&lt;li&gt;Time zone-aware &amp;amp; UTC by default&lt;/li&gt;
+&lt;li&gt;Provides super-simple creation options for many common input scenarios&lt;/li&gt;
+&lt;li&gt;Updated .replace method with support for relative offsets, including weeks&lt;/li&gt;
+&lt;li&gt;Formats and parses strings automatically&lt;/li&gt;
+&lt;li&gt;Partial support for ISO-8601&lt;/li&gt;
+&lt;li&gt;Timezone conversion&lt;/li&gt;
+&lt;li&gt;Timestamp available as a property&lt;/li&gt;
+&lt;li&gt;Generates time spans, ranges, floors and ceilings in timeframes from year to microsecond&lt;/li&gt;
+&lt;li&gt;Humanizes and supports a growing list of contributed locales&lt;/li&gt;
+&lt;li&gt;Extensible for your own Arrow-derived types&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;hint-https-github-com-crsmithdev-hint&#34;&gt;&lt;a href=&#34;https://github.com/crsmithdev/hint&#34;&gt;Hint&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;Hint is a simple mindfulness reminder for macOS.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;25 mindfulness-focused quotes delivered by notification&lt;/li&gt;
+&lt;li&gt;Configurable notification intervals from 10 minutes to 8 hours&lt;/li&gt;
+&lt;li&gt;Configurable notification sounds&lt;/li&gt;
+&lt;li&gt;Quote shuffle&lt;/li&gt;
+&lt;li&gt;Pause for preset intervals, or until resumed&lt;/li&gt;
+&lt;li&gt;Auto-launch on startup&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;goenv-https-github-com-crsmithdev-goenv&#34;&gt;&lt;a href=&#34;https://github.com/crsmithdev/goenv&#34;&gt;Goenv&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;Goenv is a Go package that provides virtualenv-like functionality for Go projects, isolating dependencies into workspaces for safer and simpler management.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Similar functionality to Python&amp;rsquo;s virtualenv and virtualenvwrapper.&lt;/li&gt;
+&lt;li&gt;Separates development directory from import path — e.g., develop in &lt;code&gt;~/myproject&lt;/code&gt;, but import from &lt;code&gt;github.com/me/myproject&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Isolates dependencies from other projects.&lt;/li&gt;
+&lt;li&gt;Does not interfere with any &lt;code&gt;go&lt;/code&gt; command functionality.&lt;/li&gt;
+&lt;li&gt;Written in Go, installable with &lt;code&gt;go get&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;notebooks-https-github-com-crsmithdev-notebooks&#34;&gt;&lt;a href=&#34;https://github.com/crsmithdev/notebooks&#34;&gt;Notebooks&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;My collection of IPython notebooks.&lt;/p&gt;
+
+&lt;h1 id=&#34;crsmithdev-com-https-github-com-crsmithdev-crsmithdev-com&#34;&gt;&lt;a href=&#34;https://github.com/crsmithdev/crsmithdev.com&#34;&gt;crsmithdev.com&lt;/a&gt;&lt;/h1&gt;
+
+&lt;p&gt;crsmithdev.com us built using &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;, a static site generator written in Go.&lt;/p&gt;
 </description>
     </item>
     

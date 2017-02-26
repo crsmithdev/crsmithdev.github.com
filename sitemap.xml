@@ -2,14 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://crsmithdev.com/</loc>
-    <lastmod>2016-06-07T19:00:47+07:00</lastmod>
-    <priority>0</priority>
+    <loc>http://crsmithdev.com/blog/ml-linear-regression/</loc>
+    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
   </url>
   
   <url>
     <loc>http://crsmithdev.com/blog/hotel-gracery-shinjuku/</loc>
-    <lastmod>2016-06-07T19:00:47+07:00</lastmod>
+    <lastmod>2016-06-07T21:00:11+07:00</lastmod>
   </url>
   
   <url>
@@ -25,11 +24,6 @@
   <url>
     <loc>http://crsmithdev.com/blog/book-review-cumulus/</loc>
     <lastmod>2016-06-02T17:02:42+07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://crsmithdev.com/projects/</loc>
-    <lastmod>2016-05-31T12:10:20+07:00</lastmod>
   </url>
   
   <url>
@@ -50,6 +44,57 @@
   <url>
     <loc>http://crsmithdev.com/blog/building-better-email-habits-with-mailbox/</loc>
     <lastmod>2013-03-26T11:31:53+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/blog/</loc>
+    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/</loc>
+    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/projects/</loc>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/books/</loc>
+    <lastmod>2016-06-02T17:02:42+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/code/</loc>
+    <lastmod>2013-09-15T11:34:46+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/habits/</loc>
+    <lastmod>2013-03-26T11:31:53+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/photography/</loc>
+    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://crsmithdev.com/categories/travel/</loc>
+    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <priority>0</priority>
   </url>
   
 </urlset>
