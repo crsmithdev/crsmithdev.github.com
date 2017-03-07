@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://crsmithdev.com/blog/ml-logistic-regression/</loc>
+    <lastmod>2017-03-06T21:00:11+07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://crsmithdev.com/blog/ml-linear-regression/</loc>
     <lastmod>2017-02-26T21:00:11+07:00</lastmod>
   </url>
@@ -48,7 +53,7 @@
   
   <url>
     <loc>https://crsmithdev.com/blog/</loc>
-    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <lastmod>2017-03-06T21:00:11+07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -59,7 +64,7 @@
   
   <url>
     <loc>https://crsmithdev.com/</loc>
-    <lastmod>2017-02-26T21:00:11+07:00</lastmod>
+    <lastmod>2017-03-06T21:00:11+07:00</lastmod>
     <priority>0</priority>
   </url>
   
